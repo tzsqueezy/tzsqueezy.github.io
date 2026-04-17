@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golf Pride — Loading Spinner</title>
+  <style>
+
+    /*  Page / demo  */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --spinner-width: 120px;
+    }
+    
+    body {
+      min-height: 100vh;
+      background: #f5f5f5;
+      font-family: sans-serif;
+    }
+
+    /*  Full-page overlay  */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0px;
+      z-index: 9999;
+      overflow: hidden; /* keeps the translating shimmer from leaking outside viewport */
+    }
+
+    /*
+      Shimmer layer - a white band that sweeps slowly left to right.
+      The gradient is transparent at both ends (0% and 100%), so when the
+      animation loops and snaps from translateX(100%) to translateX(-100%),
+      the white center is off-screen on both sides - the reset is invisible.
+    */
+    .overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to right,
+        transparent      0%,
+        white 50%,
+        transparent      100%
+      );
+      will-change: transform;
+      animation: shimmer 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    /*
+      Texture layer z-pattern tile at 5% opacity, masked with a radial
+      gradient so it fades to fully transparent at all edges and is only
+      subtly visible toward the centre of the screen.
+    */
+    .overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='14' height='28' viewBox='0 0 14 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_3174_17291)'%3E%3Cpath d='M8.31401 2.4116L4 5L6 7L8.5884 2.68599C8.69552 2.50746 8.49254 2.30448 8.31401 2.4116Z' fill='%23060808'/%3E%3Cpath d='M8.31401 16.4116L4 19L6 21L8.5884 16.686C8.69552 16.5075 8.49254 16.3045 8.31401 16.4116Z' fill='%23060808'/%3E%3Cpath d='M3.68599 11.5884L8 9L6 7L3.4116 11.314C3.30448 11.4925 3.50746 11.6955 3.68599 11.5884Z' fill='%23060808'/%3E%3Cpath d='M3.68599 25.5884L8 23L6 21L3.4116 25.314C3.30448 25.4925 3.50746 25.6955 3.68599 25.5884Z' fill='%23060808'/%3E%3Cpath d='M-1 0L15 16' stroke='%23060808'/%3E%3Cpath d='M8 -16L38 14' stroke='%23060808'/%3E%3Cpath d='M-1 14L20 35' stroke='%23060808'/%3E%3Cpath d='M-1 -14L20 7' stroke='%23060808'/%3E%3Cpath d='M7 13L5 15' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M7 27L5 29' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M7 -1L5 1' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M12 18L10 20' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M12 4L10 6' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M14 20L12 22' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M14 6L12 8' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M16 8L14 10' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M2 8L0 10' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M2 22L0 24' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M16 22L14 24' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M0 6L-2 8' stroke='%23060808' stroke-linecap='round'/%3E%3Cpath d='M0 20L-2 22' stroke='%23060808' stroke-linecap='round'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_3174_17291'%3E%3Crect width='14' height='28' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 48px;
+      opacity: 5%;
+      -webkit-mask-image: radial-gradient(ellipse 75% 65% at center, black 0%, transparent 100%);
+              mask-image: radial-gradient(ellipse 75% 65% at center, black 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    @keyframes shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX( 100%); }
+    }
+
+    /*  Spinner frame  */
+    .spinner {
+      width: var(--spinner-width);
+      height: 80px;
+      position: relative;
+      z-index: 2; /* above both overlay pseudo-element layers */
+      overflow: hidden;           /* clips dust lines as they enter/exit  */
+      will-change: transform opacity;
+      transform: rotate(-30deg);
+      animation: fadeInRight 750ms ease;
+    }
+    @keyframes fadeInRight {
+      from { 
+        transform: translate(-17.2%, 10%) rotate(-30deg);;
+        opacity: 0;
+       }
+      to   { 
+        transform: translate(0,0) rotate(-30deg);; 
+        opacity: 100%;
+      }
+    }
+
+    .ballContainer {
+      will-change: transform;
+      animation: ballBounce 100ms ease-in-out infinite alternate;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    
+
+    /*  Golf ball  */
+    .ball {
+      width: 34px;
+      height: 34px;
+      will-change: transform;
+      z-index: 1;                 /* sits in front of dust lines           */
+      /* animation: ballBounce 100ms ease-in-out infinite alternate; */
+      animation: rotate360 1.5s linear infinite;
+    }
+
+    @keyframes ballBounce {
+      from { transform: translateY(-1px); }
+      to   { transform: translateY(1px); }
+    }
+
+    @keyframes rotate360 {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /*  Dust / air lines */
+    .dust {
+      position: absolute;
+      left: 100%;
+      height: 1px;
+      border-radius: 9999px;
+      /*
+        Gradient gives a motion-blur fade: transparent to solid to transparent.
+        Keeps the pill edges soft so they feel like displaced air, not a ruler.
+      */
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        #060808 50%,
+        transparent 100%
+      );
+      will-change: transform;
+      z-index: 0;
+      /*
+        Total cycle varies. The line travels (right to left),
+        then snaps back off-screen and waits.
+
+        3 lines staggered so they're always
+        distributed through the cycle - one passing, one waiting early,
+        one waiting late.
+      */
+    }
+
+    /* High line - slightly above ball center, longest streak */
+    .dust--high {
+      width: 16px;
+      top: calc(50% - 12px);
+      animation-delay: 0ms;
+      animation: dustFly 800ms linear infinite;
+    }
+
+    /* Mid line - just below ball center, medium streak */
+    .dust--mid {
+      width: 12px;
+      top: calc(50% + 3px);
+      animation: dustFly 900ms linear infinite;
+      animation-delay: 600ms;   /* 1/3 of the way through its cycle      */
+    }
+
+    /* Low line - near bottom of ball, shortest streak */
+    .dust--low {
+      width: 10px;
+      top: calc(50% + 11px);
+      animation: dustFly 1000ms linear infinite;
+      animation-delay: 300ms;   /* 2/3 of the way through its cycle      */
+    }
+
+    @keyframes dustFly {
+      0%      { transform: translateX(0px);  }
+      33%     { transform: translateX(calc(var(--spinner-width)*(-1) - 100%)); }
+      33.01%  { transform: translateX(0px);  }
+      100%    { transform: translateX(0px);  }
+    }
+
+    @keyframes dustFlyHigh {
+      0%      { transform: translateX(0px);  }
+      20%     { transform: translateX(calc(-80px - 100%)); }
+      20.1%  { transform: translateX(0px);  }
+      100%    { transform: translateX(0px);  }
+    }
+    @keyframes dustFlyMid {
+      0%      { transform: translateX(0px);  }
+      30%     { transform: translateX(calc(-80px - 100%)); }
+      30.1%  { transform: translateX(0px);  }
+      100%    { transform: translateX(0px);  }
+    }
+    @keyframes dustFlyLow {
+      0%      { transform: translateX(0px);  }
+      33%     { transform: translateX(calc(-80px - 100%)); }
+      33.1%  { transform: translateX(0px);  }
+      100%    { transform: translateX(0px);  }
+    }
+
+
+    /*  Loading label  */
+    .spinner-label {
+      position: relative;
+      z-index: 2; /* same level as .spinner, above overlay pseudo-elements */
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #060808;
+      user-select: none;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Simulated page content behind the overlay -->
+  <h1 style="padding: 40px; color: #ccc;">Page content behind overlay</h1>
+
+  <!-- Full-page overlay -->
+  <div class="overlay" role="status" aria-label="Loading">
+    <div class="spinner">
+
+      <div class="ballContainer">
+        <!-- Golf ball -->
+        <div class="ball">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M17 33C25.8366 33 33 25.8366 33 17C33 8.16344 25.8366 1 17 1C8.16344 1 1 8.16344 1 17C1 25.8366 8.16344 33 17 33Z" fill="white" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M24.2256 9.81543C24.5106 9.81543 24.7417 10.0465 24.7417 10.3316" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23.71 10.3316C23.71 10.0465 23.941 9.81543 24.2261 9.81543" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M24.2261 10.8477C23.941 10.8477 23.71 10.6166 23.71 10.3315" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M24.7417 10.3315C24.7417 10.6166 24.5106 10.8477 24.2256 10.8477" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M27.3223 17.0413C27.6073 17.0413 27.8384 17.2723 27.8384 17.5574" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M26.8066 17.5574C26.8066 17.2723 27.0377 17.0413 27.3228 17.0413" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M27.3228 18.0735C27.0377 18.0735 26.8066 17.8424 26.8066 17.5574" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M27.8384 17.5574C27.8384 17.8424 27.6073 18.0735 27.3223 18.0735" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.0967 18.0735C20.3817 18.0735 20.6128 18.3046 20.6128 18.5896" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19.5811 18.5896C19.5811 18.3046 19.8121 18.0735 20.0972 18.0735" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.0972 19.1057C19.8121 19.1057 19.5811 18.8746 19.5811 18.5896" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.6128 18.5896C20.6128 18.8746 20.3817 19.1057 20.0967 19.1057" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23.1934 25.2993C23.4784 25.2993 23.7095 25.5304 23.7095 25.8154" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22.6777 25.8154C22.6777 25.5304 22.9088 25.2993 23.1939 25.2993" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23.1939 26.3316C22.9088 26.3316 22.6777 26.1005 22.6777 25.8154" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M23.7095 25.8154C23.7095 26.1005 23.4784 26.3316 23.1934 26.3316" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.9355 25.2993C15.2206 25.2993 15.4517 25.5304 15.4517 25.8154" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.4189 25.8154C14.4189 25.5304 14.65 25.2993 14.9351 25.2993" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.9351 26.3316C14.65 26.3316 14.4189 26.1005 14.4189 25.8154" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15.4517 25.8154C15.4517 26.1005 15.2206 26.3316 14.9355 26.3316" stroke="#060808" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Dust / air lines -->
+      <div class="dust dust--high"></div>
+      <div class="dust dust--mid"></div>
+      <div class="dust dust--low"></div>
+
+    </div>
+
+    <!-- Visible label + screen reader announcement -->
+    <p class="spinner-label" aria-hidden="true">Loading...</p>
+
+  </div>
+
+</body>
+</html>
