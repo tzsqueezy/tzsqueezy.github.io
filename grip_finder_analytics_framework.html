@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grip finder — analytics framework</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f9f8f6;
+    color: #1a1a18;
+    padding: 32px 24px;
+    max-width: 820px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  h1 { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #888780; margin-bottom: 24px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #e0ded8; overflow-x: auto; margin-bottom: 0; }
+  .tab {
+    font-size: 12px; font-weight: 500; padding: 9px 15px;
+    border: none; background: none; color: #888780; cursor: pointer;
+    border-bottom: 2px solid transparent; white-space: nowrap; margin-bottom: -1px;
+  }
+  .tab.active { color: #1a1a18; border-bottom-color: #1a1a18; }
+  .tab:hover:not(.active) { color: #444441; }
+  .panel { display: none; padding: 20px 0 0; }
+  .panel.active { display: block; }
+  .layer-label {
+    font-size: 10px; font-weight: 500; letter-spacing: .06em;
+    text-transform: uppercase; color: #888780; margin-bottom: 12px;
+  }
+  .q-card {
+    background: #fff; border: 0.5px solid #e0ded8;
+    border-radius: 12px; padding: 13px 15px; margin-bottom: 9px;
+  }
+  .q-card-head { display: flex; align-items: flex-start; gap: 10px; }
+  .q-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; line-height: 1.4; }
+  .q-why { font-size: 11px; color: #5f5e5a; line-height: 1.55; }
+  .badge {
+    display: inline-flex; align-items: center; font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 10px; white-space: nowrap; flex-shrink: 0; margin-top: 1px;
+  }
+  .b-teal { background: #E1F5EE; color: #085041; }
+  .b-amber { background: #FAEEDA; color: #633806; }
+  .b-purple { background: #EEEDFE; color: #3C3489; }
+  .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 9px; margin-bottom: 14px; }
+  .signal { background: #f1efe8; border-radius: 8px; padding: 11px 13px; }
+  .signal-q { font-size: 11px; font-weight: 500; margin-bottom: 4px; line-height: 1.4; }
+  .signal-how { font-size: 10px; color: #888780; line-height: 1.5; }
+  .highlight-box {
+    background: #f1efe8; border-radius: 10px; padding: 13px 15px; margin-top: 6px;
+  }
+  .highlight-box p { font-size: 12px; font-weight: 500; margin-bottom: 5px; }
+  .highlight-box span { font-size: 11px; color: #5f5e5a; line-height: 1.55; font-style: italic; }
+  .decision-card {
+    background: #fff; border: 0.5px solid #e0ded8;
+    border-radius: 12px; padding: 12px 15px; margin-bottom: 9px;
+  }
+  .dc-if { font-size: 10px; color: #888780; margin-bottom: 3px; }
+  .dc-then { font-size: 12px; font-weight: 500; margin-bottom: 4px; line-height: 1.4; }
+  .dc-impact { font-size: 11px; color: #5f5e5a; line-height: 1.5; }
+  .priority-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 0; border-bottom: 0.5px solid #e0ded8;
+  }
+  .priority-row:last-child { border-bottom: none; }
+  .p-num { font-size: 14px; font-weight: 500; color: #b4b2a9; min-width: 18px; padding-top: 1px; }
+  .p-body { flex: 1; }
+  .p-q { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+  .p-meta { font-size: 11px; color: #5f5e5a; line-height: 1.5; }
+  .divider { border: none; border-top: 0.5px solid #e0ded8; margin: 18px 0; }
+  @media print {
+    body { background: #fff; padding: 24px; }
+    .tabs { display: none; }
+    .panel { display: block !important; margin-bottom: 32px; }
+    .panel::before { content: attr(data-title); font-size: 14px; font-weight: 500; display: block; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #e0ded8; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Grip finder — analytics &amp; de-risking framework</h1>
+<p class="subtitle">Golf Pride grip finder · Product strategy · Q2 2026</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="show(0)">Quiz funnel</button>
+  <button class="tab" onclick="show(1)">Site behavior</button>
+  <button class="tab" onclick="show(2)">Qualitative</button>
+  <button class="tab" onclick="show(3)">Decision map</button>
+  <button class="tab" onclick="show(4)">Priority order</button>
+</div>
+
+<div class="panel active" id="p0" data-title="Quiz funnel — what the data needs to answer">
+  <p class="layer-label">What the quiz funnel data needs to answer</p>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">Where exactly do users abandon?</p><p class="q-why">Not just overall completion rate — you need per-question drop-off. The question with the steepest cliff is the highest-priority rewrite or removal candidate.</p></div>
+      <span class="badge b-teal">GA4 / funnel events</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">How long does each question take to answer?</p><p class="q-why">High time-on-question signals confusion, not consideration. The hand measurement step almost certainly shows the longest dwell — confirming this validates redesigning it as a visual guide.</p></div>
+      <span class="badge b-teal">GA4 / session recording</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">What percentage of completions lead to a product page click?</p><p class="q-why">This is the core conversion gap. If completions are high but clicks are low, the result page is the problem. If completions are low, the quiz itself is the problem.</p></div>
+      <span class="badge b-teal">GA4 / goal funnels</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">What percentage of product clicks from quiz results become add-to-cart or purchase?</p><p class="q-why">Isolates whether the quiz is generating qualified intent or just curiosity clicks. Quiz-assisted purchases vs. unassisted is the business case metric for leadership.</p></div>
+      <span class="badge b-amber">GA4 / attribution</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">Do mobile users complete at a lower rate than desktop?</p><p class="q-why">If yes, this de-risks investing in mobile UX improvements first before any content or logic changes. Eliminates the question of whether it's the questions or the interface.</p></div>
+      <span class="badge b-teal">GA4 / device segmentation</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">Do users who enter from product pages complete at a different rate than those from nav?</p><p class="q-why">If product-page entrants complete more (higher intent), it validates the inline distribution strategy. If not, it means the quiz needs to work harder regardless of entry point.</p></div>
+      <span class="badge b-purple">GA4 / traffic source</span>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="p1" data-title="Site behavior — signals that shape placement strategy">
+  <p class="layer-label">Site behavior signals that shape placement strategy</p>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">How do users who visit the quiz page arrive there?</p><p class="q-why">If most come from direct nav rather than product pages, the current site isn't surfacing the quiz at moments of purchase intent — which directly validates the distribution strategy.</p></div>
+      <span class="badge b-teal">GA4 / previous page path</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">What do users do after viewing a grip product page without buying?</p><p class="q-why">If they bounce or go back to the category — rather than going to the quiz — it means the bridge between "I'm looking at a grip" and "I need help choosing" doesn't exist yet. That's the core gap the inline module fills.</p></div>
+      <span class="badge b-teal">GA4 / next page path</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">How many product pages does the average user visit before purchasing?</p><p class="q-why">High page count before purchase = high uncertainty = high value for a recommendation tool. If users browse 4+ grip pages before converting, the inline module has a very clear ROI story.</p></div>
+      <span class="badge b-amber">GA4 / pages per session</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">Which grip product pages have the highest bounce rate?</p><p class="q-why">These are the pages where users are least able to self-qualify. They're the highest-priority placements for the inline 2-question module — biggest potential impact, clearest need.</p></div>
+      <span class="badge b-teal">GA4 / page-level bounce</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">What search terms bring users to the site or quiz?</p><p class="q-why">If users arrive via "which golf grip is right for me" type queries, SEO-optimized quiz entry pages could be a low-cost acquisition layer. Also reveals the language users use vs. Golf Pride's copy.</p></div>
+      <span class="badge b-purple">Google Search Console</span>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-card-head">
+      <div style="flex:1"><p class="q-title">What is the quiz's contribution to total site sessions — and is it growing?</p><p class="q-why">Establishes the current baseline reach. If it's under 5% of sessions, even a well-optimized quiz is low-reach without distribution changes. Makes the case for the nav entry point.</p></div>
+      <span class="badge b-amber">GA4 / page reach %</span>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="p2" data-title="Qualitative — data to collect and analyze">
+  <p class="layer-label">Qualitative data to collect and analyze</p>
+
+  <div class="signal-grid">
+    <div class="signal">
+      <p class="signal-q">Session recordings on the quiz</p>
+      <p class="signal-how">Watch for hesitation, backtracking, rage clicks, and scroll behavior. Hotjar or FullStory. Most revealing on the hand measurement question.</p>
+    </div>
+    <div class="signal">
+      <p class="signal-q">Exit survey on the result page</p>
+      <p class="signal-how">1-question: "Did this recommendation feel right for you?" Yes / Mostly / Not really. Even 50 responses tells you whether the logic is trusted.</p>
+    </div>
+  </div>
+  <div class="signal-grid">
+    <div class="signal">
+      <p class="signal-q">On-page poll at quiz entry</p>
+      <p class="signal-how">"What brought you here today?" — first-time buyer / replacing current grip / curious. Reveals intent mix without requiring a long survey.</p>
+    </div>
+    <div class="signal">
+      <p class="signal-q">Customer support / chat logs</p>
+      <p class="signal-how">What grip-related questions are asked most? Repetition = quiz isn't answering the question users actually have. Mine for copy angles too.</p>
+    </div>
+  </div>
+  <div class="signal-grid">
+    <div class="signal">
+      <p class="signal-q">Post-purchase survey</p>
+      <p class="signal-how">"How did you choose your grip?" — reveals how many buyers used the quiz, ignored it, or didn't know it existed. Critical for reach baseline.</p>
+    </div>
+    <div class="signal">
+      <p class="signal-q">Moderated user testing (3–5 sessions)</p>
+      <p class="signal-how">Ask users to find a grip they'd buy. Watch where they go, what confuses them, whether they discover the quiz. Reveals navigation assumption failures.</p>
+    </div>
+  </div>
+  <div class="signal-grid">
+    <div class="signal">
+      <p class="signal-q">Review and forum mining</p>
+      <p class="signal-how">Golf forums, Amazon grip reviews, Reddit. What language do golfers use to describe grip problems? Maps to quiz question framing.</p>
+    </div>
+    <div class="signal">
+      <p class="signal-q">Sales rep / retailer interviews</p>
+      <p class="signal-how">What questions do in-store customers ask before buying? These are the questions the quiz should replicate — validated by real purchase behavior.</p>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <p>The single most valuable qualitative question to ask</p>
+    <span>Ask 5–8 recent grip buyers: "Walk me through how you decided which grip to buy." The answer almost always reveals whether the quiz maps to their real decision journey — or whether it asks about things they never actually thought about.</span>
+  </div>
+</div>
+
+<div class="panel" id="p3" data-title="Decision map — what each finding tells you to do">
+  <p class="layer-label">What each data finding tells you to do</p>
+
+  <div class="decision-card">
+    <p class="dc-if">If you find...</p>
+    <p class="dc-then">Drop-off spikes on the hand measurement question</p>
+    <p class="dc-impact">Prioritize the visual hand-measurement guide as the single highest-ROI design change. Don't redesign the full quiz first.</p>
+  </div>
+  <div class="decision-card">
+    <p class="dc-if">If you find...</p>
+    <p class="dc-then">High completion rate but low click-through from results</p>
+    <p class="dc-impact">The quiz logic is fine — the result page is the problem. Invest in the "recommendation reveal" redesign and clearer CTAs before touching the questions.</p>
+  </div>
+  <div class="decision-card">
+    <p class="dc-if">If you find...</p>
+    <p class="dc-then">Low completion on mobile vs. desktop</p>
+    <p class="dc-impact">Do mobile UX fixes before any content strategy work. A better-designed question won't help if the interface is the blocker.</p>
+  </div>
+  <div class="decision-card">
+    <p class="dc-if">If you find...</p>
+    <p class="dc-then">Quiz accounts for under 5% of site sessions</p>
+    <p class="dc-impact">Reach is the problem, not quality. Reprioritize nav visibility and inline placement over quiz redesign — more people need to find it before you optimize it.</p>
+  </div>
+  <div class="decision-card">
+    <p class="dc-if">If you find...</p>
+    <p class="dc-then">Users browse 4+ product pages before buying</p>
+    <p class="dc-impact">Strong ROI case for the inline module on product pages. Use this as the quantified business case in the roadmap meeting.</p>
+  </div>
+  <div class="decision-card">
+    <p class="dc-if">If you find...</p>
+    <p class="dc-then">Post-purchase survey: most buyers didn't use or find the quiz</p>
+    <p class="dc-impact">Distribution is more urgent than redesign. Sequencing shifts — get the quiz visible before making it beautiful.</p>
+  </div>
+  <div class="decision-card">
+    <p class="dc-if">If you find...</p>
+    <p class="dc-then">Exit survey: "recommendation didn't feel right" scores are high</p>
+    <p class="dc-impact">Trust in the output is the problem — points to question logic and result explanation copy as the core investment, not visual design.</p>
+  </div>
+</div>
+
+<div class="panel" id="p4" data-title="Priority order — what to pull first and why">
+  <p class="layer-label">Recommended sequence — what to pull first and why</p>
+
+  <div class="priority-row">
+    <span class="p-num">1</span>
+    <div class="p-body">
+      <p class="p-q">Per-question funnel drop-off from GA4</p>
+      <p class="p-meta">Takes 30 minutes to pull if events are already firing. Single highest-signal dataset — tells you where the problem is before you write a single brief.</p>
+    </div>
+    <span class="badge b-teal">This week</span>
+  </div>
+  <div class="priority-row">
+    <span class="p-num">2</span>
+    <div class="p-body">
+      <p class="p-q">Quiz reach as % of total sessions</p>
+      <p class="p-meta">Answers the fundamental sequencing question: optimize the quiz, or get more people to it? Everything else flows from this.</p>
+    </div>
+    <span class="badge b-teal">This week</span>
+  </div>
+  <div class="priority-row">
+    <span class="p-num">3</span>
+    <div class="p-body">
+      <p class="p-q">Post-quiz result → product click → purchase attribution</p>
+      <p class="p-meta">Establishes the current revenue baseline for the quiz. Required to build a business case for any investment level.</p>
+    </div>
+    <span class="badge b-teal">This week</span>
+  </div>
+  <div class="priority-row">
+    <span class="p-num">4</span>
+    <div class="p-body">
+      <p class="p-q">Session recordings on the quiz (10–15 sessions)</p>
+      <p class="p-meta">Qualitative color on the quantitative funnel. Watch after you know where drop-off happens to understand why.</p>
+    </div>
+    <span class="badge b-amber">Next 2 weeks</span>
+  </div>
+  <div class="priority-row">
+    <span class="p-num">5</span>
+    <div class="p-body">
+      <p class="p-q">Product page next-path analysis (what do non-buyers do?)</p>
+      <p class="p-meta">Validates or challenges the inline placement hypothesis. If users aren't going to the quiz from product pages today, it's because the bridge doesn't exist — not because they don't want help.</p>
+    </div>
+    <span class="badge b-amber">Next 2 weeks</span>
+  </div>
+  <div class="priority-row">
+    <span class="p-num">6</span>
+    <div class="p-body">
+      <p class="p-q">5–8 buyer interviews ("walk me through your decision")</p>
+      <p class="p-meta">Validates whether the quiz questions map to how real golfers actually think about choosing a grip. Can be done async via Loom prompt to avoid scheduling overhead.</p>
+    </div>
+    <span class="badge b-purple">Weeks 3–4</span>
+  </div>
+  <div class="priority-row">
+    <span class="p-num">7</span>
+    <div class="p-body">
+      <p class="p-q">Exit survey on result page + post-purchase survey</p>
+      <p class="p-meta">Longer to accumulate enough responses but sets up ongoing measurement. Launch now so data is ready when you need it for phase 2 decisions.</p>
+    </div>
+    <span class="badge b-purple">Launch now, read in 4–6 weeks</span>
+  </div>
+</div>
+
+<script>
+function show(i) {
+  document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', idx === i));
+  document.querySelectorAll('.panel').forEach((p, idx) => p.classList.toggle('active', idx === i));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grip finder — complete kickoff framework</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f9f8f6;
+    color: #1a1a18;
+    padding: 32px 24px;
+    max-width: 860px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  h1 { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #888780; margin-bottom: 6px; }
+  .method-note { font-size: 11px; color: #085041; background: #E1F5EE; border-radius: 6px; padding: 4px 10px; display: inline-block; margin-bottom: 22px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #e0ded8; overflow-x: auto; margin-bottom: 0; }
+  .tab {
+    font-size: 11px; font-weight: 500; padding: 8px 13px;
+    border: none; background: none; color: #888780; cursor: pointer;
+    border-bottom: 2px solid transparent; white-space: nowrap; margin-bottom: -1px;
+  }
+  .tab.active { color: #1a1a18; border-bottom-color: #1a1a18; }
+  .tab:hover:not(.active) { color: #444441; }
+  .panel { display: none; padding: 20px 0 8px; }
+  .panel.active { display: block; }
+  .sec-label {
+    font-size: 10px; font-weight: 500; letter-spacing: .06em;
+    text-transform: uppercase; color: #888780; margin-bottom: 12px;
+  }
+  .card {
+    background: #fff; border: 0.5px solid #e0ded8;
+    border-radius: 12px; padding: 12px 15px; margin-bottom: 9px;
+  }
+  .card-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; line-height: 1.4; }
+  .card-body { font-size: 11px; color: #5f5e5a; line-height: 1.6; }
+  .badge {
+    display: inline-flex; align-items: center; font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 10px; white-space: nowrap; flex-shrink: 0;
+  }
+  .b-teal { background: #E1F5EE; color: #085041; }
+  .b-amber { background: #FAEEDA; color: #633806; }
+  .b-purple { background: #EEEDFE; color: #3C3489; }
+  .b-coral { background: #FAECE7; color: #712B13; }
+  .b-gray { background: #f1efe8; color: #5f5e5a; border: 0.5px solid #d3d1c7; }
+  .b-green { background: #EAF3DE; color: #27500A; }
+  .note-box {
+    background: #f1efe8; border-radius: 8px; padding: 11px 13px;
+    margin-top: 6px; margin-bottom: 12px;
+  }
+  .note-title { font-size: 11px; font-weight: 500; margin-bottom: 3px; }
+  .note-body { font-size: 11px; color: #5f5e5a; line-height: 1.55; }
+  .divider { border: none; border-top: 0.5px solid #e0ded8; margin: 16px 0; }
+
+  /* Goals */
+  .goal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin-bottom: 10px; }
+  .goal-card { background: #f1efe8; border-radius: 8px; padding: 11px 13px; }
+  .goal-num { font-size: 18px; font-weight: 500; color: #b4b2a9; margin-bottom: 4px; line-height: 1; }
+  .goal-title { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+  .goal-body { font-size: 11px; color: #5f5e5a; line-height: 1.5; }
+
+  /* OST */
+  .ost-outcome {
+    background: #EEEDFE; border: 0.5px solid #AFA9EC; border-radius: 12px;
+    padding: 10px 14px; margin-bottom: 10px; text-align: center;
+  }
+  .ost-outcome p { font-size: 12px; font-weight: 500; color: #3C3489; margin-bottom: 2px; }
+  .ost-outcome span { font-size: 10px; color: #534AB7; }
+  .ost-connector { width: 0.5px; background: #d3d1c7; margin: 0 auto; height: 8px; }
+  .ost-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 7px; }
+  .ost-opp { border-radius: 8px; padding: 8px 10px; }
+  .ost-opp-a { background: #FAEEDA; border: 0.5px solid #EF9F27; }
+  .ost-opp-b { background: #E1F5EE; border: 0.5px solid #5DCAA5; }
+  .ost-opp-c { background: #FAECE7; border: 0.5px solid #F0997B; }
+  .ost-opp p { font-size: 11px; font-weight: 500; margin-bottom: 2px; line-height: 1.3; }
+  .ost-opp span { font-size: 10px; line-height: 1.4; display: block; }
+  .ost-opp-a p { color: #633806; } .ost-opp-a span { color: #854F0B; }
+  .ost-opp-b p { color: #085041; } .ost-opp-b span { color: #0F6E56; }
+  .ost-opp-c p { color: #712B13; } .ost-opp-c span { color: #993C1D; }
+  .ost-sol-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .ost-sol {
+    background: #f1efe8; border: 0.5px solid #e0ded8;
+    border-radius: 7px; padding: 7px 9px; margin-bottom: 5px;
+  }
+  .ost-sol p { font-size: 10px; color: #5f5e5a; line-height: 1.4; }
+  .ost-col-label { font-size: 10px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: #888780; margin: 0 0 7px; text-align: center; }
+
+  /* Agenda */
+  .agenda-row {
+    display: grid; grid-template-columns: 58px 1fr auto;
+    gap: 11px; align-items: start; padding: 11px 0;
+    border-bottom: 0.5px solid #e0ded8;
+  }
+  .agenda-row:last-child { border-bottom: none; }
+  .time-col { font-size: 11px; font-weight: 500; color: #888780; padding-top: 1px; line-height: 1.4; }
+  .agenda-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .agenda-sub { font-size: 11px; color: #5f5e5a; line-height: 1.55; margin-bottom: 4px; }
+  .atag {
+    display: inline-block; font-size: 9px; font-weight: 500;
+    padding: 2px 6px; border-radius: 6px; margin-right: 3px; margin-top: 2px;
+  }
+  .at-present { background: #E1F5EE; color: #085041; }
+  .at-generate { background: #FAEEDA; color: #633806; }
+  .at-align { background: #EEEDFE; color: #3C3489; }
+  .at-decide { background: #FAECE7; color: #712B13; }
+  .at-close { background: #f1efe8; color: #5f5e5a; border: 0.5px solid #d3d1c7; }
+  .cdh-tag {
+    display: inline-block; font-size: 9px; font-weight: 500;
+    padding: 2px 6px; border-radius: 6px; background: #EAF3DE; color: #27500A; margin-left: 3px;
+  }
+
+  /* Pre-work */
+  .pre-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 0.5px solid #e0ded8;
+  }
+  .pre-row:last-child { border-bottom: none; }
+  .pre-who { font-size: 10px; font-weight: 500; color: #888780; min-width: 80px; padding-top: 2px; line-height: 1.4; }
+  .pre-what { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+  .pre-why { font-size: 11px; color: #5f5e5a; line-height: 1.5; }
+
+  /* Traps */
+  .trap-card {
+    background: #fff; border: 0.5px solid #e0ded8; border-radius: 12px;
+    padding: 11px 14px; margin-bottom: 8px;
+    display: flex; gap: 11px; align-items: flex-start;
+  }
+  .trap-icon {
+    width: 26px; height: 26px; border-radius: 50%; background: #FAECE7;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+  .trap-title { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+  .trap-fix { font-size: 11px; color: #5f5e5a; line-height: 1.5; }
+
+  /* Outputs */
+  .output-row {
+    display: flex; gap: 10px; padding: 9px 0;
+    border-bottom: 0.5px solid #e0ded8; align-items: flex-start;
+  }
+  .output-row:last-child { border-bottom: none; }
+  .out-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .out-title { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+  .out-desc { font-size: 11px; color: #5f5e5a; line-height: 1.5; }
+
+  /* Assumptions */
+  .assum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .assum-card { background: #fff; border: 0.5px solid #e0ded8; border-radius: 12px; padding: 11px 13px; }
+  .assum-type { font-size: 10px; font-weight: 500; margin-bottom: 3px; }
+  .assum-def { font-size: 11px; color: #5f5e5a; line-height: 1.5; margin-bottom: 6px; }
+  .assum-ex {
+    font-size: 11px; color: #1a1a18; font-style: italic; line-height: 1.45;
+    border-left: 2px solid #d3d1c7; padding-left: 8px;
+  }
+
+  /* Post-kickoff cadence */
+  .cadence-row {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 0.5px solid #e0ded8;
+  }
+  .cadence-row:last-child { border-bottom: none; }
+  .cad-freq { font-size: 11px; font-weight: 500; color: #888780; min-width: 72px; padding-top: 2px; line-height: 1.3; }
+  .cad-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .cad-body { font-size: 11px; color: #5f5e5a; line-height: 1.5; }
+
+  /* Interview guide */
+  .int-card { background: #fff; border: 0.5px solid #e0ded8; border-radius: 12px; padding: 11px 14px; margin-bottom: 8px; }
+  .int-q { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+  .int-why { font-size: 11px; color: #5f5e5a; line-height: 1.5; }
+
+  /* Print */
+  @media print {
+    body { background: #fff; padding: 24px; }
+    .tabs { display: none; }
+    .panel { display: block !important; margin-bottom: 40px; page-break-inside: avoid; }
+    .panel::before {
+      content: attr(data-title); font-size: 15px; font-weight: 500;
+      display: block; margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 1px solid #e0ded8;
+    }
+    .goal-grid, .assum-grid { grid-template-columns: 1fr 1fr; }
+    .ost-cols, .ost-sol-row { grid-template-columns: 1fr 1fr 1fr; }
+    .agenda-row { grid-template-columns: 58px 1fr auto; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Grip finder — complete kickoff framework</h1>
+<p class="subtitle">Golf Pride grip finder · Project kickoff + continuous discovery · Q2 2026</p>
+<span class="method-note">Integrates Teresa Torres's Continuous Discovery Habits (CDH) throughout</span>
+
+<div class="tabs">
+  <button class="tab active" onclick="show(0)">Goals</button>
+  <button class="tab" onclick="show(1)">OST canvas</button>
+  <button class="tab" onclick="show(2)">Pre-work</button>
+  <button class="tab" onclick="show(3)">Run of show</button>
+  <button class="tab" onclick="show(4)">Traps</button>
+  <button class="tab" onclick="show(5)">Outputs</button>
+  <button class="tab" onclick="show(6)">Assumptions</button>
+  <button class="tab" onclick="show(7)">Post-kickoff</button>
+  <button class="tab" onclick="show(8)">Interview guide</button>
+</div>
+
+<!-- GOALS -->
+<div class="panel active" id="p0" data-title="Kickoff goals">
+  <p class="sec-label">The 6 goals of this kickoff</p>
+  <div class="goal-grid">
+    <div class="goal-card">
+      <p class="goal-num">01</p>
+      <p class="goal-title">Frame outcomes, not outputs</p>
+      <p class="goal-body">Establish from the first minute that this meeting is about what measurably better looks like — not what to build. Ground rules are set here: solutions go in the parking lot until there's an opportunity to hang them from.</p>
+    </div>
+    <div class="goal-card">
+      <p class="goal-num">02</p>
+      <p class="goal-title">Align on a shared problem statement</p>
+      <p class="goal-body">Everyone leaves able to say the same sentence about what this project is solving and why now. A draft is prepared in advance for the room to react to — not written from scratch in the meeting.</p>
+    </div>
+    <div class="goal-card">
+      <p class="goal-num">03</p>
+      <p class="goal-title">Build and pressure-test the opportunity solution tree</p>
+      <p class="goal-body">A draft OST — outcome at the top, opportunity branches below, solutions column blank — is introduced for stakeholders to reshape. This structures debate around customer needs, not internal opinions. Disagreements about which branch matters most are the most valuable moments in the room.</p>
+    </div>
+    <div class="goal-card">
+      <p class="goal-num">04</p>
+      <p class="goal-title">Define measurable success outcomes</p>
+      <p class="goal-body">Not a vision statement — specific, measurable changes in customer behavior or business results that define a clear win. Agreed on by the group, mapped to the OST outcome node. 2–3 metrics maximum.</p>
+    </div>
+    <div class="goal-card">
+      <p class="goal-num">05</p>
+      <p class="goal-title">Establish the discovery rhythm</p>
+      <p class="goal-body">CDH principle: research is a continuous habit, not a one-time phase. The kickoff names who runs customer interviews, how often, and how learnings feed the OST. Without naming this owner and committing to a cadence in the room, the habit stops within two weeks.</p>
+    </div>
+    <div class="goal-card">
+      <p class="goal-num">06</p>
+      <p class="goal-title">Clarify roles, decision rights, and OST ownership</p>
+      <p class="goal-body">Who owns what? Who decides when there's no consensus? Who maintains the OST as the living project document? RACI drafted before the meeting, validated in the closing minutes. Two calendar dates booked before leaving the room.</p>
+    </div>
+  </div>
+  <div class="note-box">
+    <p class="note-title">What this kickoff is NOT for</p>
+    <p class="note-body">Designing solutions. Debating feature priorities. Reviewing competitor screenshots. Pitching ideas. All of that comes after research — and only after an opportunity has been validated with enough customer evidence to justify it. The kickoff protects against skipping to solutions before understanding the problem.</p>
+  </div>
+</div>
+
+<!-- OST CANVAS -->
+<div class="panel" id="p1" data-title="Opportunity solution tree — draft canvas">
+  <p class="sec-label">Draft opportunity solution tree — bring into the kickoff for the room to reshape</p>
+  <p style="font-size:11px;color:#5f5e5a;margin:0 0 14px;line-height:1.6">This draft is prepared by the PM before the kickoff and introduced as a working hypothesis — not a finished document. The room's job is to challenge the opportunity branches, add missing ones, and agree on which branch to prioritize for the first research sprint. Solutions stay blank until opportunities are validated.</p>
+
+  <div class="ost-outcome">
+    <p>Desired outcome</p>
+    <span>More golfers find and buy the right grip with confidence — directly through golfpride.com</span>
+  </div>
+  <div class="ost-connector"></div>
+  <p class="ost-col-label" style="margin-top:8px">Opportunity space — customer needs, pain points, and desires</p>
+  <div class="ost-cols">
+    <div class="ost-opp ost-opp-a">
+      <p>Users never find the quiz</p>
+      <span>Low reach — quiz is invisible at moments of high purchase intent on the site</span>
+    </div>
+    <div class="ost-opp ost-opp-b">
+      <p>Users start but don't finish</p>
+      <span>Friction, confusion, or cognitive effort causes abandonment mid-quiz</span>
+    </div>
+    <div class="ost-opp ost-opp-c">
+      <p>Users don't trust the result</p>
+      <span>Recommendation feels generic, unexplained, or misaligned with actual needs</span>
+    </div>
+  </div>
+  <div class="ost-connector"></div>
+  <p class="ost-col-label" style="margin-top:8px">Solution space — populated only after opportunities are validated through research</p>
+  <div class="ost-sol-row">
+    <div>
+      <div class="ost-sol"><p>Nav elevation + persistent entry point</p></div>
+      <div class="ost-sol"><p>Inline modules on product pages</p></div>
+      <div class="ost-sol"><p>Category page scroll-triggered banner</p></div>
+    </div>
+    <div>
+      <div class="ost-sol"><p>Visual hand measurement guide</p></div>
+      <div class="ost-sol"><p>Conditional question logic + rewrites</p></div>
+      <div class="ost-sol"><p>Progress indicator + mobile UX fixes</p></div>
+    </div>
+    <div>
+      <div class="ost-sol"><p>"Recommendation reveal" result page</p></div>
+      <div class="ost-sol"><p>Explanation copy: why this grip</p></div>
+      <div class="ost-sol"><p>Persistent grip profile + match badge</p></div>
+    </div>
+  </div>
+  <div class="note-box" style="margin-top:10px">
+    <p class="note-title">How to use the OST in the room</p>
+    <p class="note-body">Put the outcome and the three opportunity branches up on screen. Ask: "Are these the right opportunities? What's missing? Which branch do we believe is most critical to address first?" This discussion — not a solution debate — should anchor the first half of the meeting. A solution only earns the right to enter the tree once the opportunity it serves has been validated by customer research.</p>
+  </div>
+</div>
+
+<!-- PRE-WORK -->
+<div class="panel" id="p2" data-title="Pre-work — what to prepare before the kickoff">
+  <p class="sec-label">Pre-work — what to prepare before the kickoff and who owns it</p>
+
+  <div class="pre-row">
+    <span class="pre-who">PM / analyst</span>
+    <div>
+      <p class="pre-what">Analytics snapshot — 1 page maximum</p>
+      <p class="pre-why">Pull and distribute 48 hours before the meeting: quiz reach as % of total site sessions, per-question completion and drop-off rates, result-to-product-click rate, quiz-assisted purchase attribution, and mobile vs. desktop completion split. Sending this in advance means the meeting doesn't waste time orienting everyone to basic facts — and debates about what's actually happening can be short-circuited with data already in the room.</p>
+    </div>
+  </div>
+
+  <div class="pre-row">
+    <span class="pre-who">PM</span>
+    <div>
+      <p class="pre-what">Draft problem statement</p>
+      <p class="pre-why">Don't ask the room to write a problem statement from scratch — that's a 45-minute spiral. Send a draft in advance and ask people to come with reactions. Example: "The grip finder reaches too few users and converts too few of those who complete it — we don't yet know whether the core problem is reach, the quiz experience, or trust in the result." Much faster to edit than create.</p>
+    </div>
+  </div>
+
+  <div class="pre-row">
+    <span class="pre-who">PM</span>
+    <div>
+      <p class="pre-what">Draft OST — outcome + opportunity branches</p>
+      <p class="pre-why">The three-branch OST prepared as a one-page visual. Sent with the analytics brief so stakeholders arrive with a mental model of the opportunity space before the meeting. The solutions column stays blank — this signals that the session is about opportunities, not feature pitches.</p>
+    </div>
+  </div>
+
+  <div class="pre-row">
+    <span class="pre-who">PM</span>
+    <div>
+      <p class="pre-what">Project context one-pager</p>
+      <p class="pre-why">What we know, what we don't, what's in scope for this phase, and what's explicitly out of scope. Include a brief note on the CDH approach: this project will use continuous weekly customer interviews as the primary discovery method — research is not a phase with an end date.</p>
+    </div>
+  </div>
+
+  <div class="pre-row">
+    <span class="pre-who">UX lead</span>
+    <div>
+      <p class="pre-what">3–5 inspiration references (optional)</p>
+      <p class="pre-why">Not to anchor solutions, but to establish a shared aesthetic and UX quality bar. Framed as "this is the experience standard we're aiming for" — not "this is what we're building." Prevents vague words like "premium" or "elegant" from meaning different things to different people when the design phase begins.</p>
+    </div>
+  </div>
+
+  <div class="pre-row">
+    <span class="pre-who">Facilitator</span>
+    <div>
+      <p class="pre-what">RACI draft for research and design phases</p>
+      <p class="pre-why">Responsible, Accountable, Consulted, Informed — drafted before the meeting, validated in the closing 10 minutes. Includes a named OST keeper: the person responsible for updating the tree after each interview and experiment. Ambiguity here is the single biggest cause of slow projects with multiple stakeholders.</p>
+    </div>
+  </div>
+
+  <div class="pre-row">
+    <span class="pre-who">All stakeholders</span>
+    <div>
+      <p class="pre-what">Pre-read prompt sent with invite</p>
+      <p class="pre-why">A single ask sent with the calendar invite: "Come with one assumption you're holding about why users don't get value from the grip finder, and one thing you'd need to see from customer research to feel confident about moving forward." Activates thinking before the room and means the opportunity mapping exercise doesn't start cold.</p>
+    </div>
+  </div>
+</div>
+
+<!-- RUN OF SHOW -->
+<div class="panel" id="p3" data-title="Run of show — 90 minutes">
+  <p class="sec-label">Run of show — 90 minutes</p>
+
+  <div class="agenda-row">
+    <span class="time-col">0:00<br><span style="font-weight:400;font-size:10px">10 min</span></span>
+    <div>
+      <p class="agenda-title">Framing: outcomes over outputs</p>
+      <p class="agenda-sub">Facilitator opens by naming the CDH principle explicitly: we are here to align on what measurably better looks like — not to decide what to build. Introduce the OST as the shared canvas for the project lifecycle. Set the ground rules: solutions are welcome but go in the parking lot until there's an opportunity node to hang them from. No mockups, no feature lists, no competitor screenshots today.</p>
+      <span class="atag at-present">set context</span><span class="cdh-tag">CDH framing</span>
+    </div>
+    <span class="badge b-gray">Facilitator</span>
+  </div>
+
+  <div class="agenda-row">
+    <span class="time-col">0:10<br><span style="font-weight:400;font-size:10px">15 min</span></span>
+    <div>
+      <p class="agenda-title">Current state brief + draft OST reveal</p>
+      <p class="agenda-sub">Present the analytics snapshot: quiz reach as % of total sessions, per-question drop-off rates, completion rate by device, result-to-click conversion, and quiz-assisted purchase attribution. Keep commentary factual — no editorializing yet. Immediately follow with the draft OST on screen: desired outcome at top, three opportunity branches below, solutions column intentionally blank. Frame it: "This is our working hypothesis about where the problems live. Your job today is to pressure-test it."</p>
+      <span class="atag at-present">present data</span><span class="cdh-tag">OST introduced</span>
+    </div>
+    <span class="badge b-teal">PM / analyst</span>
+  </div>
+
+  <div class="agenda-row">
+    <span class="time-col">0:25<br><span style="font-weight:400;font-size:10px">20 min</span></span>
+    <div>
+      <p class="agenda-title">Opportunity mapping — react to and reshape the OST</p>
+      <p class="agenda-sub">Silent individual write first (3 minutes): each person writes their assumptions about customer pain points on sticky notes — physical or digital. What needs are unmet? What frustrations exist? What's missing from the three branches? Then share, group, and map onto the OST. Are the branches right? Are there opportunities missing entirely? Look explicitly for disagreements — those are the most valuable moments in the room. This replaces abstract opinion-based discussion with debate anchored to customer needs.</p>
+      <span class="atag at-generate">silent write</span><span class="atag at-align">group + map</span><span class="cdh-tag">CDH opportunity discovery</span>
+    </div>
+    <span class="badge b-purple">All</span>
+  </div>
+
+  <div class="agenda-row">
+    <span class="time-col">0:45<br><span style="font-weight:400;font-size:10px">10 min</span></span>
+    <div>
+      <p class="agenda-title">Opportunity prioritization — where to focus research first</p>
+      <p class="agenda-sub">Dot vote on which opportunity branch the group believes is most critical and most uncertain. Each person gets 3 dots. Tally and discuss the top two. Look for the branch with the highest potential impact AND the lowest current evidence — that's the right starting focus for research. This doesn't commit to any solution. It commits to a research focus. The branch with the most tension or disagreement in the room usually signals the most unresolved assumption worth testing.</p>
+      <span class="atag at-align">dot vote</span><span class="atag at-decide">prioritize</span><span class="cdh-tag">CDH opportunity focus</span>
+    </div>
+    <span class="badge b-purple">All</span>
+  </div>
+
+  <div class="agenda-row">
+    <span class="time-col">0:55<br><span style="font-weight:400;font-size:10px">10 min</span></span>
+    <div>
+      <p class="agenda-title">Success definition — the outcomes we're accountable for</p>
+      <p class="agenda-sub">Ask each stakeholder: "If this project is a clear success in 6 months, what will be measurably different?" Capture all answers. Facilitator synthesizes into a draft success statement on screen. Vote on the 2–3 outcomes that matter most. Frame these as CDH outcomes: measurable changes in customer behavior or business result — not features shipped. Map agreed outcomes to the OST outcome node. Example targets: quiz reach rises from X% to Y% of sessions; quiz-assisted conversion improves by Z%; result confidence score exceeds a threshold.</p>
+      <span class="atag at-generate">individual answers</span><span class="atag at-decide">vote + confirm</span><span class="cdh-tag">outcomes not outputs</span>
+    </div>
+    <span class="badge b-purple">All</span>
+  </div>
+
+  <div class="agenda-row">
+    <span class="time-col">1:05<br><span style="font-weight:400;font-size:10px">10 min</span></span>
+    <div>
+      <p class="agenda-title">Establish the discovery rhythm</p>
+      <p class="agenda-sub">Introduce the CDH weekly interview habit: one 30-minute customer interview per week as a non-negotiable team rhythm — not a research sprint. Answer three questions as a group: Who on this team will conduct interviews? Where do learnings get captured and how do they feed the OST? What's the minimum viable cadence we'll commit to? Name the interview owner before leaving the room. Even one interview every two weeks beats zero. The first three interview slots should be booked before leaving.</p>
+      <span class="atag at-decide">commit + name owner</span><span class="cdh-tag">CDH weekly interviews</span>
+    </div>
+    <span class="badge b-teal">PM + UX lead</span>
+  </div>
+
+  <div class="agenda-row">
+    <span class="time-col">1:15<br><span style="font-weight:400;font-size:10px">10 min</span></span>
+    <div>
+      <p class="agenda-title">Roles, decision rights, and OST ownership</p>
+      <p class="agenda-sub">Review the pre-prepared RACI draft. Validate the key roles: who is responsible for research execution, who is consulted at phase gates, who makes final calls if the group doesn't reach consensus. Add the CDH-specific role: the OST keeper — responsible for updating the tree after each interview and experiment, and preparing the monthly stakeholder update. Book two calendar dates before leaving: first stakeholder OST review (~4 weeks out) and a research cadence check-in (~2 weeks out).</p>
+      <span class="atag at-decide">validate RACI</span><span class="cdh-tag">OST keeper role</span>
+    </div>
+    <span class="badge b-teal">PM</span>
+  </div>
+
+  <div class="agenda-row">
+    <span class="time-col">1:25<br><span style="font-weight:400;font-size:10px">5 min</span></span>
+    <div>
+      <p class="agenda-title">Close — read back three aligned decisions</p>
+      <p class="agenda-sub">Facilitator reads back exactly what was agreed — not a summary of what was discussed, but a statement of what was decided. Three items: (1) the problem statement, (2) the priority opportunity branch for the first research sprint, and (3) the discovery cadence and owner. Participants confirm or correct in the room. A written summary goes out within 24 hours — not three days later.</p>
+      <span class="atag at-close">confirm + close</span>
+    </div>
+    <span class="badge b-gray">Facilitator</span>
+  </div>
+</div>
+
+<!-- TRAPS -->
+<div class="panel" id="p4" data-title="Common traps — and how to handle them">
+  <p class="sec-label">Common traps — and how to handle them in the room</p>
+
+  <div class="trap-card">
+    <div class="trap-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+    <div>
+      <p class="trap-title">Jumping to solutions before the opportunity is agreed on</p>
+      <p class="trap-fix">The facilitator's most important job is pattern recognition here. The moment someone says "we should just..." — redirect explicitly: "That's a great idea, let's park it — but first let's agree which opportunity it would address." Keep the parking lot visible on screen throughout. Honoring the contribution while maintaining structure is more effective than cutting the person off.</p>
+    </div>
+  </div>
+
+  <div class="trap-card">
+    <div class="trap-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+    <div>
+      <p class="trap-title">HiPPO effect — loudest or most senior voice sets direction</p>
+      <p class="trap-fix">Use the silent individual write before any group discussion for both the opportunity mapping and success definition exercises. Written inputs before spoken inputs levels the playing field and surfaces perspectives that wouldn't survive open debate. When the most senior person goes last in sharing, it reduces anchoring on their view.</p>
+    </div>
+  </div>
+
+  <div class="trap-card">
+    <div class="trap-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+    <div>
+      <p class="trap-title">Scope creep in the room</p>
+      <p class="trap-fix">Every large project kickoff attracts adjacent ideas — distribution strategy, SEO, personalization, app features. Have a visible parking lot running throughout. It honors every contribution without derailing the agenda. At the close, tell the room explicitly: "These are great — they'll be revisited once research has shaped the core scope."</p>
+    </div>
+  </div>
+
+  <div class="trap-card">
+    <div class="trap-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+    <div>
+      <p class="trap-title">Treating the OST as a PM artifact rather than a shared canvas</p>
+      <p class="trap-fix">CDH only works if the OST is genuinely a team document. Frame it explicitly: "This tree belongs to everyone in this room. Your job is to challenge it, add to it, and use it to make decisions." If stakeholders don't feel ownership of the tree, they'll disengage from the discovery rhythm within weeks.</p>
+    </div>
+  </div>
+
+  <div class="trap-card">
+    <div class="trap-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+    <div>
+      <p class="trap-title">Leaving without a documented, confirmed close</p>
+      <p class="trap-fix">The last 5 minutes must be a read-back of what was decided — not what was discussed. The facilitator states it; participants nod or correct. The meeting summary should be a verbatim record of those three decisions, sent within 24 hours. A follow-up document three days later loses the moment of alignment.</p>
+    </div>
+  </div>
+
+  <div class="trap-card">
+    <div class="trap-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+    <div>
+      <p class="trap-title">Treating research as a formality, not a gate</p>
+      <p class="trap-fix">In the room, be explicit: design work does not begin until the priority opportunity has been validated through customer interviews and assumption tests. The reframe that lands with business stakeholders: "We're not slowing down to do research — we're preventing a redesign that solves the wrong problem."</p>
+    </div>
+  </div>
+
+  <div class="trap-card">
+    <div class="trap-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+    <div>
+      <p class="trap-title">Interview habit dying after week two</p>
+      <p class="trap-fix">Without a named owner, protected calendar time, and a lightweight log visible to all stakeholders, the weekly interview habit quietly stops when things get busy. Name the owner in the room. Book the first three interview slots before leaving. Make the log accessible to all stakeholders — even a shared doc — so the habit feels like a team activity, not a researcher's private task.</p>
+    </div>
+  </div>
+</div>
+
+<!-- OUTPUTS -->
+<div class="panel" id="p5" data-title="Outputs — what to walk out with">
+  <p class="sec-label">What to walk out of the kickoff with</p>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#1D9E75"></div>
+    <div>
+      <p class="out-title">A signed-off problem statement</p>
+      <p class="out-desc">One or two sentences agreed on in the room. Example: "The grip finder reaches too few users and converts too few of those who complete it — we need to understand whether the core problem is reach, the quiz experience, or trust in the result before we redesign anything."</p>
+    </div>
+  </div>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#1D9E75"></div>
+    <div>
+      <p class="out-title">A validated and expanded OST — opportunities agreed, solutions blank</p>
+      <p class="out-desc">The draft tree reshaped by the room. New opportunity nodes added, existing ones pressure-tested, priority branch agreed. The solutions column remains intentionally empty — it fills only as research validates opportunities. This is the living project document going forward, owned by the OST keeper and visible to all stakeholders.</p>
+    </div>
+  </div>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#1D9E75"></div>
+    <div>
+      <p class="out-title">A success definition with 2–3 measurable outcomes</p>
+      <p class="out-desc">Not a vision statement — specific and measurable. Examples: quiz reach increases from X% to Y% of sessions; quiz-assisted conversion rate improves by Z%; result recommendation confidence score exceeds a threshold in exit surveys. These are the outcomes the team is accountable for, mapped to the OST outcome node.</p>
+    </div>
+  </div>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#534AB7"></div>
+    <div>
+      <p class="out-title">A prioritized opportunity branch for the first research sprint</p>
+      <p class="out-desc">Agreed by dot vote and discussion. The branch with the highest impact potential and lowest current evidence is the right starting focus. This shapes the first wave of customer interviews — every question in the interview guide maps back to this branch.</p>
+    </div>
+  </div>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#534AB7"></div>
+    <div>
+      <p class="out-title">A named discovery owner and committed cadence</p>
+      <p class="out-desc">A specific person owns the weekly interview habit. A minimum cadence is agreed — weekly if possible, bi-weekly at minimum. The first three interview slots are booked before leaving the room. The log where findings feed the OST is named and accessible to all stakeholders.</p>
+    </div>
+  </div>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#534AB7"></div>
+    <div>
+      <p class="out-title">A RACI — including the OST keeper role</p>
+      <p class="out-desc">Who is responsible for research execution, consulted at phase gates, and who makes final calls when the group doesn't reach consensus. The OST keeper is explicitly named — responsible for updating the tree after each interview and experiment, and preparing the monthly stakeholder update.</p>
+    </div>
+  </div>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#B4B2A9"></div>
+    <div>
+      <p class="out-title">Two calendar dates booked</p>
+      <p class="out-desc">First stakeholder OST review (~4 weeks out) and a research cadence check-in (~2 weeks out). Without these set before leaving, the project loses its forcing function within a week. Dates booked in-room have a much higher survival rate than those agreed "to be scheduled."</p>
+    </div>
+  </div>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#B4B2A9"></div>
+    <div>
+      <p class="out-title">A parking lot of ideas to revisit post-research</p>
+      <p class="out-desc">Every good idea that surfaced but was out of scope or premature. Visible during the meeting, distributed in the follow-up summary. Signals to stakeholders their contributions were heard and will be revisited — reduces the urge to re-raise them mid-project and protects the team's focus during research.</p>
+    </div>
+  </div>
+
+  <div class="output-row">
+    <div class="out-dot" style="background:#B4B2A9"></div>
+    <div>
+      <p class="out-title">A meeting summary sent within 24 hours</p>
+      <p class="out-desc">Not a minutes document — a decision record. Three sections: what was decided (the three aligned items read back at close), the updated OST, and the parking lot. Sent to all attendees and relevant stakeholders who weren't in the room. The moment of alignment is fragile — document it quickly.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ASSUMPTIONS -->
+<div class="panel" id="p6" data-title="Assumption testing — CDH framework">
+  <p class="sec-label">Torres's four assumption types — applied to grip finder before any solution enters design</p>
+  <p style="font-size:11px;color:#5f5e5a;margin:0 0 12px;line-height:1.6">Every proposed solution rests on a stack of assumptions. Before any solution moves into design, map its assumptions into these four categories. Rank each by importance (how much does the solution depend on this being true?) and evidence (how much do we actually know?). High importance + low evidence = the assumption to test first — with the smallest, cheapest experiment possible.</p>
+
+  <div class="assum-grid">
+    <div class="assum-card">
+      <p class="assum-type" style="color:#085041">Desirability — does the customer want this?</p>
+      <p class="assum-def">Would golfers actually use this if it existed? Do they recognize it as solving a real problem they have?</p>
+      <p class="assum-ex">"Golfers who are uncertain would engage with a 2-question inline module on a product page." / "Users trust a brand recommendation enough to act on it without further validation."</p>
+    </div>
+    <div class="assum-card">
+      <p class="assum-type" style="color:#633806">Viability — does this work for the business?</p>
+      <p class="assum-def">Will the investment generate sufficient return? Does it align with business strategy and constraints?</p>
+      <p class="assum-ex">"Increasing quiz reach will meaningfully lift conversion, not just traffic volume." / "A persistent grip profile will increase return-visit purchase rates enough to justify the engineering cost."</p>
+    </div>
+    <div class="assum-card">
+      <p class="assum-type" style="color:#3C3489">Feasibility — can we actually build this?</p>
+      <p class="assum-def">Do we have the technical capability, data, and resources to execute this at the quality required?</p>
+      <p class="assum-ex">"The existing quiz logic can be surfaced as an embeddable component on product pages without a full rebuild." / "We can instrument per-question drop-off in GA4 without a significant dev sprint."</p>
+    </div>
+    <div class="assum-card">
+      <p class="assum-type" style="color:#712B13">Usability — can customers use this as intended?</p>
+      <p class="assum-def">Will users understand what to do, complete the task, and interpret the output correctly?</p>
+      <p class="assum-ex">"Mobile users can accurately select grip attributes from a visual card interface without needing to zoom." / "Users can measure their own hand size at home using a printed guide without abandoning."</p>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <p class="note-title">How to run a fast assumption test (CDH)</p>
+    <p class="note-body">Torres advocates for the smallest experiment that generates signal — not a full prototype or design sprint. A "fake door" test adds the nav link and measures clicks before the component exists. A one-question exit survey asks "did this recommendation feel right?" A prototype shown to five users in a 20-minute session tests usability for nearly zero cost. The question is always: what is the cheapest way to find out whether this assumption is true or false?</p>
+  </div>
+</div>
+
+<!-- POST-KICKOFF CADENCE -->
+<div class="panel" id="p7" data-title="Post-kickoff discovery cadence">
+  <p class="sec-label">Post-kickoff discovery cadence — CDH-informed continuous loop</p>
+
+  <div class="cadence-row">
+    <span class="cad-freq">Weekly</span>
+    <div>
+      <p class="cad-title">Customer interview — 30 minutes</p>
+      <p class="cad-body">One interview per week with a recent grip buyer, prospective buyer, or quiz user. Not a usability test — an opportunity discovery conversation anchored to the priority branch from the kickoff. One team member leads, one observes. Questions follow the interview guide (see next tab). Rotate who leads over time to build the discovery habit across the team, not just the researcher.</p>
+    </div>
+  </div>
+
+  <div class="cadence-row">
+    <span class="cad-freq">Weekly</span>
+    <div>
+      <p class="cad-title">OST update — add, promote, or retire nodes</p>
+      <p class="cad-body">Within 24 hours of each interview, the OST keeper updates the tree: new opportunity nodes surfaced, assumptions validated or killed, solutions that now have an evidence base to enter a branch. This takes 15 minutes. The OST is the living record of what the team knows — not a Confluence page updated once a quarter.</p>
+    </div>
+  </div>
+
+  <div class="cadence-row">
+    <span class="cad-freq">Bi-weekly</span>
+    <div>
+      <p class="cad-title">Assumption test review — 30 minutes</p>
+      <p class="cad-body">What experiments ran? What did they tell us? Does this change opportunity prioritization? One decision per meeting: does an assumption get promoted (enough evidence), killed (evidence against), or flagged for more testing? This keeps the team moving without waiting for a large research readout before anything can proceed.</p>
+    </div>
+  </div>
+
+  <div class="cadence-row">
+    <span class="cad-freq">Monthly</span>
+    <div>
+      <p class="cad-title">Stakeholder OST review — 45 minutes</p>
+      <p class="cad-body">Bring the updated OST to the full stakeholder group. Show what has been learned since last time, which opportunities have shifted in priority based on evidence, and which solutions now have sufficient validation to move into design. This replaces the traditional "big research readout" with a lower-stakes, ongoing alignment rhythm. No single monthly meeting carries too much weight because decisions are made incrementally.</p>
+    </div>
+  </div>
+
+  <div class="cadence-row">
+    <span class="cad-freq">At gate</span>
+    <div>
+      <p class="cad-title">Opportunity-to-solution promotion decision</p>
+      <p class="cad-body">A solution earns the right to move into design when two conditions are met: (1) the opportunity it serves has been validated by at least 3 independent customer interviews, and (2) the critical desirability and usability assumptions have been tested with a lightweight experiment. This CDH gate replaces the single large "go / no-go" meeting with a rolling, evidence-based promotion process.</p>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <p class="note-title">The key shift CDH makes to how this project runs after kickoff</p>
+    <p class="note-body">Traditional approach: research phase → readout → design starts. CDH approach: continuous weekly interviews feed the OST, small assumption tests run in parallel, and solutions get promoted into design as they accumulate evidence. The kickoff isn't the start of a project with a waterfall end — it's the start of a loop that doesn't stop. Stakeholders get a monthly view into a living picture instead of a quarterly update on a static roadmap.</p>
+  </div>
+</div>
+
+<!-- INTERVIEW GUIDE -->
+<div class="panel" id="p8" data-title="Weekly customer interview guide">
+  <p class="sec-label">Weekly customer interview guide — opportunity discovery</p>
+  <p style="font-size:11px;color:#5f5e5a;margin:0 0 12px;line-height:1.6">CDH interviews are not usability tests and not surveys. The goal is to understand the customer's actual experience — their context, struggles, and mental model — not to validate solutions. Never show mockups or mention features. Start with a specific recent memory, follow curiosity, stay in the past. Aim for 30 minutes. One person leads, one takes notes.</p>
+
+  <div class="int-card">
+    <p class="int-q">Warm-up: "Tell me about the last time you bought new grips."</p>
+    <p class="int-why">Opens with a specific, recent memory — not a hypothetical. Gets the person talking about real behavior rather than what they think they should say. Listen for: where they were, what triggered the purchase, and whether a recommendation tool would have fit naturally into that moment.</p>
+  </div>
+
+  <div class="int-card">
+    <p class="int-q">Decision process: "How did you figure out which grips were right for you?"</p>
+    <p class="int-why">Maps their actual decision journey. Did they use a tool? Ask a pro? Guess and try? This surfaces the real job-to-be-done — and whether a grip finder would have helped or been ignored entirely. If they mention the Golf Pride quiz, follow it: "Walk me through what that was like." If they didn't mention it, that's significant signal.</p>
+  </div>
+
+  <div class="int-card">
+    <p class="int-q">Struggle: "Was there anything that made that process harder than it needed to be?"</p>
+    <p class="int-why">Direct opportunity probe. Don't suggest answers. If they pause, wait — the silence is often where the most honest answer lives. This is the question that surfaces unmet needs belonging on the OST. A "no, it was fine" is also informative — it may mean the problem lives elsewhere on the tree.</p>
+  </div>
+
+  <div class="int-card">
+    <p class="int-q">Site experience: "Have you ever visited golfpride.com while shopping for grips? Tell me about that."</p>
+    <p class="int-why">Opens the door to their site experience without leading them toward the quiz. If they mention the quiz spontaneously, follow it deeply. If they describe browsing product pages without mentioning the quiz, the reach opportunity is confirmed. If they haven't visited the site at all, that's a distribution and awareness problem upstream of the quiz entirely.</p>
+  </div>
+
+  <div class="int-card">
+    <p class="int-q">Confidence: "How confident did you feel that you bought the right grip? What gave you that feeling — or didn't?"</p>
+    <p class="int-why">Directly probes the trust and result-quality opportunity branch. A buyer who says "I'm still not sure I bought the right one" is describing exactly the problem the quiz is supposed to solve — and hasn't. A buyer who says "the pro shop person explained it" tells you what the quiz needs to replicate in its result copy.</p>
+  </div>
+
+  <div class="int-card">
+    <p class="int-q">Close: "If you could change one thing about how you found and chose your grips, what would it be?"</p>
+    <p class="int-why">Invitation for the customer to name their own solution. Treat these as opportunity signals — not product requirements. Patterns across 5–8 interviews are signal; a single response is anecdote. Track recurring themes and map them back to the OST. If a new theme appears that doesn't fit existing branches, that's a new opportunity node to add.</p>
+  </div>
+
+  <div class="note-box">
+    <p class="note-title">After the interview — update the OST immediately</p>
+    <p class="note-body">Within 24 hours: the OST keeper adds new opportunity nodes, updates confidence levels on existing assumptions, and logs any surprises. A single insight that contradicts a team assumption is worth more than ten that confirm it — contradictions prevent expensive wrong turns in design. After 5–8 interviews on the priority branch, the team should have enough signal to validate or invalidate the core assumptions and make a promotion decision on the first solutions to enter design.</p>
+  </div>
+</div>
+
+<script>
+function show(i) {
+  document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', idx === i));
+  document.querySelectorAll('.panel').forEach((p, idx) => p.classList.toggle('active', idx === i));
+}
+</script>
+</body>
+</html>
