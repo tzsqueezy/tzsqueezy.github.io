@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design–Dev Quality Framework — Arro Labs × Golf Pride</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #0f1117;
+    --ink-mid: #3a3f4a;
+    --ink-light: #6b7280;
+    --ink-xlight: #9ca3af;
+    --rule: #e5e7eb;
+    --rule-light: #f3f4f6;
+    --white: #ffffff;
+    --cream: #fafaf8;
+    --green: #1a6b3a;
+    --green-mid: #237a44;
+    --green-light: #e8f4ed;
+    --green-xlight: #f2faf5;
+    --gold: #b8860b;
+    --gold-light: #fdf8e8;
+    --amber: #d97706;
+    --crawl: #1a6b3a;
+    --walk: #1d4ed8;
+    --run: #7c3aed;
+    --crawl-light: #e8f4ed;
+    --walk-light: #eff6ff;
+    --run-light: #f5f3ff;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--ink);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 52px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-brand {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-right: auto;
+  }
+  .nav-brand span { color: var(--white); }
+  nav a {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 0 14px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s;
+    border-bottom: 2px solid transparent;
+  }
+  nav a:hover { color: var(--white); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    padding: 80px 40px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.015) 40px,
+      rgba(255,255,255,0.015) 41px
+    );
+  }
+  .hero-inner { max-width: 860px; position: relative; }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-mid);
+    margin-bottom: 24px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--green-mid);
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    line-height: 1.08;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: rgba(255,255,255,0.5);
+  }
+  .hero-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.55);
+    max-width: 580px;
+    line-height: 1.65;
+    margin-bottom: 40px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .hero-meta-item span { color: rgba(255,255,255,0.7); display: block; margin-top: 2px; font-size: 13px; text-transform: none; letter-spacing: 0; }
+
+  /* ── MAIN LAYOUT ── */
+  .page { max-width: 900px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* ── SECTION ── */
+  section { padding: 64px 0 0; }
+  .section-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-xlight);
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .section-lead {
+    font-size: 15px;
+    color: var(--ink-mid);
+    max-width: 660px;
+    line-height: 1.7;
+    margin-bottom: 36px;
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+    margin-top: 16px;
+  }
+
+  /* ── DIVIDER ── */
+  hr { border: none; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* ── DIAGNOSIS CARDS ── */
+  .diagnosis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 36px;
+  }
+  .diag-card {
+    background: var(--white);
+    padding: 28px 24px;
+  }
+  .diag-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: var(--rule);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .diag-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .diag-body { font-size: 13px; color: var(--ink-mid); line-height: 1.6; }
+
+  /* ── OWNERSHIP TABLE ── */
+  .own-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 13.5px;
+  }
+  .own-table th {
+    text-align: left;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-xlight);
+    padding: 10px 16px;
+    background: var(--rule-light);
+    border-bottom: 1px solid var(--rule);
+  }
+  .own-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--rule-light);
+    vertical-align: top;
+  }
+  .own-table tr:last-child td { border-bottom: none; }
+  .own-table td:first-child { font-weight: 500; color: var(--ink); width: 36%; }
+  .own-table .owner-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--ink);
+    color: var(--white);
+    letter-spacing: 0.03em;
+  }
+  .own-table .owner-support {
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-top: 3px;
+  }
+
+  /* ── CRAWL/WALK/RUN ── */
+  .cwrphase {
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: var(--white);
+  }
+  .cwrphase-header {
+    padding: 22px 28px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .phase-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .phase-crawl .phase-badge { background: var(--crawl-light); color: var(--crawl); }
+  .phase-walk .phase-badge { background: var(--walk-light); color: var(--walk); }
+  .phase-run .phase-badge { background: var(--run-light); color: var(--run); }
+
+  .cwrphase-title { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.01em; color: var(--ink); }
+  .cwrphase-tagline { font-size: 13px; color: var(--ink-light); margin-top: 3px; }
+  .cwrphase-timeline {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-left: auto;
+    flex-shrink: 0;
+    padding-top: 6px;
+  }
+  .phase-crawl .cwrphase-timeline { color: var(--crawl); }
+  .phase-walk .cwrphase-timeline { color: var(--walk); }
+  .phase-run .cwrphase-timeline { color: var(--run); }
+
+  .cwrphase-body { padding: 24px 28px; }
+  .cwrphase-goal {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-mid);
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--rule-light);
+    border-radius: 6px;
+    border-left: 3px solid var(--rule);
+  }
+  .phase-crawl .cwrphase-goal { border-left-color: var(--crawl); background: var(--crawl-light); color: var(--crawl); }
+  .phase-walk .cwrphase-goal { border-left-color: var(--walk); background: var(--walk-light); color: var(--walk); }
+  .phase-run .cwrphase-goal { border-left-color: var(--run); background: var(--run-light); color: var(--run); }
+
+  .cwr-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .cwr-col-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-xlight);
+    margin-bottom: 12px;
+  }
+  .tactic-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .tactic-list li {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+  }
+  .tactic-list li::before {
+    content: '→';
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .phase-crawl .tactic-list li::before { color: var(--crawl); }
+  .phase-walk .tactic-list li::before { color: var(--walk); }
+  .phase-run .tactic-list li::before { color: var(--run); }
+
+  .dep-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .dep-list li {
+    display: flex;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--ink-light);
+    line-height: 1.5;
+    align-items: flex-start;
+  }
+  .dep-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    background: var(--rule-light);
+    color: var(--ink-light);
+    border: 1px solid var(--rule);
+  }
+
+  /* ── BENEFITS GRID ── */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .benefit-card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 22px 22px;
+  }
+  .benefit-icon {
+    font-size: 22px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .benefit-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .benefit-body { font-size: 13px; color: var(--ink-mid); line-height: 1.6; }
+
+  /* ── CALLOUT BLOCK ── */
+  .callout {
+    background: var(--gold-light);
+    border: 1px solid #e6d28a;
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-size: 13px;
+    color: var(--gold);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .callout-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+
+  /* ── STAKEHOLDER ASKS ── */
+  .stakeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .stake-card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 22px;
+  }
+  .stake-role {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-xlight);
+    margin-bottom: 10px;
+  }
+  .stake-name { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+  .stake-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .stake-list li { font-size: 12.5px; color: var(--ink-mid); display: flex; gap: 8px; line-height: 1.5; }
+  .stake-list li::before { content: '·'; color: var(--ink-xlight); flex-shrink: 0; }
+
+  /* ── CHECKLIST ── */
+  .checklist-section {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .checklist-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--rule-light);
+  }
+  .checklist-header-icon { font-size: 18px; }
+  .checklist-header-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .checklist-header-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-xlight);
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .checklist-items { padding: 8px 0; }
+  .check-item {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--rule-light);
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    align-items: start;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item:hover { background: var(--cream); }
+  .check-item.checked { background: #f9fdf9; }
+  .check-item.checked .check-text { color: var(--ink-light); }
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--rule);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s;
+    background: var(--white);
+  }
+  .check-item.checked .check-box {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .check-item.checked .check-box::after {
+    content: '✓';
+    font-size: 10px;
+    color: var(--white);
+    font-weight: 700;
+  }
+  .check-text {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.55;
+  }
+  .check-text strong { color: var(--ink); font-weight: 600; }
+  .check-note {
+    font-size: 11.5px;
+    color: var(--ink-xlight);
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .severity {
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .sev-critical { background: var(--red-light); color: var(--red); }
+  .sev-high { background: #fff7ed; color: var(--amber); }
+  .sev-medium { background: var(--walk-light); color: var(--walk); }
+
+  .checklist-print-note {
+    font-size: 12px;
+    color: var(--ink-light);
+    text-align: center;
+    padding: 16px 0 0;
+    font-style: italic;
+  }
+
+  /* ── PRE-FLIGHT GATE ── */
+  .preflight {
+    background: var(--ink);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  .preflight-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 6px;
+  }
+  .preflight-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .preflight-sub {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .preflight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .preflight-item {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.5;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .preflight-item::before {
+    content: '◦';
+    color: var(--green-mid);
+    flex-shrink: 0;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  /* ── TOKEN PRINCIPLE ── */
+  .token-principle {
+    background: var(--green-xlight);
+    border: 1px solid #c3e6d0;
+    border-left: 3px solid var(--green);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--green);
+    line-height: 1.6;
+  }
+  .token-principle strong { color: var(--green); }
+
+  /* ── CONDITIONAL SECTION ── */
+  .checklist-section.conditional { border-style: dashed; }
+  .conditional-badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: #fef9e7;
+    color: #92660a;
+    border: 1px solid #f0d98a;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    background: var(--rule);
+    border-radius: 4px;
+    height: 4px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+  }
+  .progress-count { font-weight: 600; color: var(--ink); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    margin-top: 64px;
+  }
+  footer .foot-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.04em;
+  }
+  footer .foot-label strong { color: rgba(255,255,255,0.7); }
+
+  /* ── PRINT ── */
+  @media print {
+    nav, footer { display: none; }
+    .cwrphase, .checklist-section, .benefit-card, .stake-card { break-inside: avoid; }
+    body { background: white; }
+  }
+
+  @media (max-width: 680px) {
+    nav { padding: 0 20px; }
+    nav a { display: none; }
+    .hero { padding: 48px 20px; }
+    .page { padding: 0 20px 60px; }
+    .diagnosis-grid { grid-template-columns: 1fr; }
+    .cwr-cols { grid-template-columns: 1fr; }
+    .benefits-grid { grid-template-columns: 1fr; }
+    .stakeholder-grid { grid-template-columns: 1fr; }
+    .preflight-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Arro Labs × <span>Golf Pride</span></div>
+  <a href="#diagnosis">Problem</a>
+  <a href="#framework">Framework</a>
+  <a href="#rollout">Rollout</a>
+  <a href="#stakeholders">Stakeholders</a>
+  <a href="#checklist">Checklist</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Design Quality Initiative</div>
+    <h1>Closing the Gap Between<br><em>Design Intent</em> and Production.</h1>
+    <p class="hero-sub">A phased framework for higher-quality releases through shared ownership, structured handoffs, and design-aware QA — built to grow at the team's pace.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Partnership<span>Arro Labs × Golf Pride</span></div>
+      <div class="hero-meta-item">Rollout<span>Crawl → Walk → Run</span></div>
+      <div class="hero-meta-item">Phases<span>3 phases over ~5 months</span></div>
+      <div class="hero-meta-item">Team<span>PM · Designer · Developer · QA</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- SECTION 1: DIAGNOSIS -->
+  <section id="diagnosis">
+    <div class="section-label">The Problem</div>
+    <div class="section-title">Where quality breaks down</div>
+    <p class="section-lead">Most teams don't lose quality because of bad intentions — they lose it because of three specific, fixable failure points in the design-to-production pipeline. Each one compounds the others.</p>
+
+    <div class="diagnosis-grid">
+      <div class="diag-card">
+        <div class="diag-num">01</div>
+        <div class="diag-title">Translation Loss</div>
+        <div class="diag-body">What leaves Figma and what gets built are subtly different — spacing, type scale, corner radius, interactive states. Nobody caught it because nobody was explicitly responsible for the comparison.</div>
+      </div>
+      <div class="diag-card">
+        <div class="diag-num">02</div>
+        <div class="diag-title">Definition Gaps</div>
+        <div class="diag-body">The design showed the happy path. Developers had to improvise edge cases, empty states, error states, and loading states. Those improvised decisions accumulate into a product that feels "off" without a specific mistake to point to.</div>
+      </div>
+      <div class="diag-card">
+        <div class="diag-num">03</div>
+        <div class="diag-title">Late Discovery</div>
+        <div class="diag-body">QA and UAT happen after the build is "done," so every fix requires rework — not correction. The cost and team friction at this stage is 5–10x what it would be if caught at 50% build.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">⚡</span>
+      <div>Quality becomes "everyone's job" — which quietly becomes "no one's job." The frameworks that follow attack this directly with clear ownership at every stage, not shared ambiguity.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: FRAMEWORK -->
+  <section id="framework">
+    <div class="section-label">The Framework</div>
+    <div class="section-title">Four phases, clear owners</div>
+    <p class="section-lead">The framework organizes the design-to-production workflow into four distinct phases — each with a primary owner and defined handoff points. This replaces a single vague "handoff" moment with a continuous quality thread.</p>
+
+    <table class="own-table">
+      <thead>
+        <tr>
+          <th>Phase &amp; Responsibility</th>
+          <th>Primary Owner</th>
+          <th>Support</th>
+          <th>Key Output</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1 · Design Completeness Gate<br><span style="font-size:12px;color:var(--ink-light);font-weight:400">All states, breakpoints, edge cases defined before dev queue entry</span></td>
+          <td><span class="owner-badge">Designer</span><div class="owner-support">PM enforces gate</div></td>
+          <td style="color:var(--ink-light);font-size:13px;">PM</td>
+          <td style="color:var(--ink-mid);font-size:13px;">Completed completeness checklist on every ticket</td>
+        </tr>
+        <tr>
+          <td>2 · Handoff Alignment Session<br><span style="font-size:12px;color:var(--ink-light);font-weight:400">30-min walkthrough of intent, behavior, and decisions before build</span></td>
+          <td><span class="owner-badge">Designer + Dev</span></td>
+          <td style="color:var(--ink-light);font-size:13px;">—</td>
+          <td style="color:var(--ink-mid);font-size:13px;">Decision log — exceptions and ambiguities documented</td>
+        </tr>
+        <tr>
+          <td>3 · Build-Phase Design Review<br><span style="font-size:12px;color:var(--ink-light);font-weight:400">Designer check-ins at 50% build and pre-QA</span></td>
+          <td><span class="owner-badge">Designer</span></td>
+          <td style="color:var(--ink-light);font-size:13px;">Developer</td>
+          <td style="color:var(--ink-mid);font-size:13px;">Flagged issues while fixes are still cheap</td>
+        </tr>
+        <tr>
+          <td>4a · Functional QA<br><span style="font-size:12px;color:var(--ink-light);font-weight:400">Does it work? Devices, browsers, edge cases, acceptance criteria</span></td>
+          <td><span class="owner-badge">QA</span></td>
+          <td style="color:var(--ink-light);font-size:13px;">Developer</td>
+          <td style="color:var(--ink-mid);font-size:13px;">QA pass against ticket acceptance criteria</td>
+        </tr>
+        <tr>
+          <td>4b · Design QA<br><span style="font-size:12px;color:var(--ink-light);font-weight:400">Does it look and feel right? Compared against Figma spec</span></td>
+          <td><span class="owner-badge">Designer</span></td>
+          <td style="color:var(--ink-light);font-size:13px;">QA (environment)</td>
+          <td style="color:var(--ink-mid);font-size:13px;">Design QA checklist sign-off (see Section 5)</td>
+        </tr>
+        <tr>
+          <td>4c · UAT<br><span style="font-size:12px;color:var(--ink-light);font-weight:400">Does it solve the right problem? Client/stakeholder validation</span></td>
+          <td><span class="owner-badge">PM</span></td>
+          <td style="color:var(--ink-light);font-size:13px;">Designer, QA</td>
+          <td style="color:var(--ink-mid);font-size:13px;">Triage of feedback → bugs vs. scope vs. preference</td>
+        </tr>
+        <tr>
+          <td>Production Sign-off<br><span style="font-size:12px;color:var(--ink-light);font-weight:400">All three QA streams cleared and quality matrix green</span></td>
+          <td><span class="owner-badge">PM</span></td>
+          <td style="color:var(--ink-light);font-size:13px;">All</td>
+          <td style="color:var(--ink-mid);font-size:13px;">Release approved</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:12px;color:var(--ink-xlight);margin-bottom:0;padding-top:4px;">Note: Design QA and Functional QA are deliberately separated — they require different references and different skill sets. Collapsing them is where things fall through the cracks.</p>
+  </section>
+
+  <!-- SECTION 3: ROLLOUT -->
+  <section id="rollout">
+    <div class="section-label">The Rollout</div>
+    <div class="section-title">Crawl → Walk → Run</div>
+    <p class="section-lead">The full framework introduced at once creates adoption friction and usually collapses. Instead, we phase it across three maturity stages — each building on the last, each delivering immediate value, and each calibrated to what the team can realistically absorb.</p>
+
+    <!-- CRAWL -->
+    <div class="cwrphase phase-crawl">
+      <div class="cwrphase-header">
+        <div>
+          <span class="phase-badge">Crawl</span>
+          <div class="cwrphase-title" style="margin-top:10px;">Foundations</div>
+          <div class="cwrphase-tagline">Establish shared language, close the most obvious handoff gaps — zero new tooling required.</div>
+        </div>
+        <div class="cwrphase-timeline">Weeks 1–6</div>
+      </div>
+      <div class="cwrphase-body">
+        <div class="cwrphase-goal">Goal: Create a baseline of shared expectations without disrupting the existing workflow. Every tactic here can be adopted in the next sprint.</div>
+        <div class="cwr-cols">
+          <div>
+            <div class="cwr-col-label">Tactics</div>
+            <ul class="tactic-list">
+              <li>Define "design complete" — create a 5-item completeness checklist as a required sub-task on every design ticket before it enters the dev queue</li>
+              <li>Run the first handoff alignment session for one feature this sprint — 30 minutes, designer walks developer through intent and behavior</li>
+              <li>Designer performs one 50% build check-in per sprint, calendared, not ad-hoc</li>
+              <li>Separate Design QA and Functional QA as two distinct sub-tasks in your PM tool so neither gets skipped in the rush to close</li>
+              <li>Introduce the quality matrix — a shared doc showing each feature's QA status across functional, design, and UAT streams</li>
+              <li>Begin logging handoff decisions: any time a developer makes a UI call the design didn't specify, it's logged in the ticket comment</li>
+            </ul>
+          </div>
+          <div>
+            <div class="cwr-col-label">Dependencies &amp; Asks</div>
+            <ul class="dep-list">
+              <li><span class="dep-tag">PM</span>Commit to enforcing the completeness gate — no ticket moves to dev without the checklist passing</li>
+              <li><span class="dep-tag">Designer</span>Budget ~1.5 hrs/sprint for the alignment session and 50% check-in</li>
+              <li><span class="dep-tag">Dev</span>Agree to log improvised UI decisions in ticket comments rather than silently deciding</li>
+              <li><span class="dep-tag">QA</span>Separate design QA reviews from functional QA in your workflow, even if the same person runs both</li>
+              <li><span class="dep-tag">Tool</span>Existing PM tool (Linear / Jira / Notion) — no new tools needed in this phase</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WALK -->
+    <div class="cwrphase phase-walk">
+      <div class="cwrphase-header">
+        <div>
+          <span class="phase-badge">Walk</span>
+          <div class="cwrphase-title" style="margin-top:10px;">Process Solidification</div>
+          <div class="cwrphase-tagline">Make crawl-phase habits reliable, add lightweight tooling, connect design tokens to code.</div>
+        </div>
+        <div class="cwrphase-timeline">Months 2–4</div>
+      </div>
+      <div class="cwrphase-body">
+        <div class="cwrphase-goal">Goal: The crawl habits are now assumed, not negotiated. This phase hardens them into workflow infrastructure and introduces the token pipeline that makes design QA faster and more objective.</div>
+        <div class="cwr-cols">
+          <div>
+            <div class="cwr-col-label">Tactics</div>
+            <ul class="tactic-list">
+              <li>PM formally enforces the completeness gate — tickets without it are returned, not fast-tracked</li>
+              <li>The Design QA Checklist (Section 5) is introduced as the official design review standard for every release</li>
+              <li>Decision log moves from ticket comments to a structured Notion page or Figma annotation layer per feature</li>
+              <li>Tokens Studio → Style Dictionary pipeline established: design tokens in Figma sync to code variables, making QA token-name-based rather than eyeball-based</li>
+              <li>Introduce Storybook for component documentation — each new component has a story before design QA closes</li>
+              <li>Hold a team retrospective at month 3 — what's working, what's been skipped, what needs refinement</li>
+              <li>UAT structure formalized: PM prepares scenario-based testing scripts instead of open-ended "take a look" reviews</li>
+            </ul>
+          </div>
+          <div>
+            <div class="cwr-col-label">Dependencies &amp; Asks</div>
+            <ul class="dep-list">
+              <li><span class="dep-tag">Leader</span>Figma organization plan or admin access for proper component library publishing and Tokens Studio integration</li>
+              <li><span class="dep-tag">Leader</span>Budget approval for Tokens Studio (free tier available, paid at $0–$15/mo) if not already licensed</li>
+              <li><span class="dep-tag">Dev</span>Set up Style Dictionary pipeline in the codebase — approximately 2–4 hrs one-time investment</li>
+              <li><span class="dep-tag">Designer</span>Migrate Figma styles to variables and Tokens Studio format — approximately 4–8 hrs depending on existing system maturity</li>
+              <li><span class="dep-tag">QA</span>Familiarize with the design QA checklist and apply it in reviews — training session recommended</li>
+              <li><span class="dep-tag">PM</span>Design and run the first structured UAT scenario set for Golf Pride stakeholders</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUN -->
+    <div class="cwrphase phase-run">
+      <div class="cwrphase-header">
+        <div>
+          <span class="phase-badge">Run</span>
+          <div class="cwrphase-title" style="margin-top:10px;">Systemic Quality</div>
+          <div class="cwrphase-tagline">Quality is built into the system — automated, documented, and self-reinforcing.</div>
+        </div>
+        <div class="cwrphase-timeline">Month 5+</div>
+      </div>
+      <div class="cwrphase-body">
+        <div class="cwrphase-goal">Goal: Quality requires no heroics. The pipeline catches regressions automatically, new team members onboard to the process quickly, and the team can release with confidence.</div>
+        <div class="cwr-cols">
+          <div>
+            <div class="cwr-col-label">Tactics</div>
+            <ul class="tactic-list">
+              <li>Figma Code Connect operational — developers reference live component code from design; design and code are the same source of truth</li>
+              <li>Visual regression testing via Chromatic (Storybook) or Percy runs on every PR — catches unintended visual changes automatically</li>
+              <li>Design QA checklist evolves: token-name verification replaces eyeball checks, reducing review time from ~40 min to ~15 min</li>
+              <li>Accessibility automated testing (axe-core or Deque) integrated into CI pipeline as a hard gate on PRs</li>
+              <li>Onboarding documentation for new team members covers the full quality process — no tribal knowledge dependencies</li>
+              <li>Quarterly "design health audit" — a structured review of design debt, token drift, and component divergence across the product</li>
+            </ul>
+          </div>
+          <div>
+            <div class="cwr-col-label">Dependencies &amp; Asks</div>
+            <ul class="dep-list">
+              <li><span class="dep-tag">Leader</span>Budget for Chromatic ($0–$149/mo depending on snapshots) or Percy — essential for visual regression at this stage</li>
+              <li><span class="dep-tag">Leader</span>GitHub CI/CD integration permissions for QA gates on pull requests</li>
+              <li><span class="dep-tag">Dev</span>Chromatic or Percy integration into CI pipeline — approximately 1 day setup</li>
+              <li><span class="dep-tag">Dev</span>Code Connect configuration for all current Figma components — ongoing, ~1 hr per component</li>
+              <li><span class="dep-tag">Designer</span>Maintain Figma component library as the active source of truth — not a one-time exercise but an ongoing commitment</li>
+              <li><span class="dep-tag">PM</span>Document and maintain the quality process; update it after every retrospective</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: BENEFITS -->
+  <section id="benefits">
+    <div class="section-label">The Case for It</div>
+    <div class="section-title">Why this investment pays off</div>
+    <p class="section-lead">The crawl phase alone — which requires no new tools or budget — typically reduces design rework in QA by 40–60% simply by making issues discoverable earlier. Here's the full picture of what changes.</p>
+
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <span class="benefit-icon">⚙️</span>
+        <div class="benefit-title">Fewer late-stage surprises</div>
+        <div class="benefit-body">Issues caught at the 50% check-in are corrected, not reworked. The cost of a fix at this stage is typically 10–20% of what it costs after dev-complete — and it produces no stakeholder visibility or anxiety.</div>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">🎯</span>
+        <div class="benefit-title">Higher first-pass release quality</div>
+        <div class="benefit-body">When design QA runs against a specific checklist, defects are caught consistently — not by whoever happens to notice something looks wrong. Production releases start matching Figma spec more reliably.</div>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">🤝</span>
+        <div class="benefit-title">Stronger client trust</div>
+        <div class="benefit-body">Golf Pride stakeholders experience fewer "that's not what we signed off on" moments in UAT. Structured UAT scenarios replace open-ended review, reducing subjective scope creep and keeping feedback actionable.</div>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">🧠</span>
+        <div class="benefit-title">Less tribal knowledge dependency</div>
+        <div class="benefit-body">Decision logs and documented processes mean a new developer or QA person can get up to speed quickly. Quality doesn't live only in individual heads.</div>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">📐</span>
+        <div class="benefit-title">Design system actually used</div>
+        <div class="benefit-body">The token pipeline and Code Connect integration ensure the design system is a living reference — not a Figma file that slowly diverges from what's in production.</div>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">🔁</span>
+        <div class="benefit-title">Sustainable pace</div>
+        <div class="benefit-body">The crawl/walk/run structure means no single sprint absorbs all the process change. The team builds habits incrementally, which is the only way process changes actually stick.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: STAKEHOLDERS -->
+  <section id="stakeholders">
+    <div class="section-label">Stakeholder Guide</div>
+    <div class="section-title">What we need from each player</div>
+    <p class="section-lead">This framework only works with aligned expectations across roles. Here's what each player is being asked to commit to — and what they get in return.</p>
+
+    <div class="stakeholder-grid">
+      <div class="stake-card">
+        <div class="stake-role">Role</div>
+        <div class="stake-name">Product Manager</div>
+        <ul class="stake-list">
+          <li>Enforce the completeness gate — return tickets that aren't spec'd</li>
+          <li>Calendar the handoff session and 50% check-in as recurring tasks</li>
+          <li>Own UAT facilitation and triage feedback into bugs vs. scope vs. preference</li>
+          <li>Maintain and share the quality matrix with the full team</li>
+          <li>Secure tool access and budget approvals for walk/run phases</li>
+        </ul>
+      </div>
+      <div class="stake-card">
+        <div class="stake-role">Role</div>
+        <div class="stake-name">Designer</div>
+        <ul class="stake-list">
+          <li>Deliver design-complete specs before tickets enter the dev queue</li>
+          <li>Define all interactive states, edge cases, and responsive behavior — not just the happy path</li>
+          <li>Show up for the handoff session and the 50% check-in (~1.5 hrs/sprint)</li>
+          <li>Own Design QA as a separate pass against the checklist (Section 5)</li>
+          <li>Migrate Figma styles to variables/tokens during walk phase</li>
+        </ul>
+      </div>
+      <div class="stake-card">
+        <div class="stake-role">Role</div>
+        <div class="stake-name">Developer</div>
+        <ul class="stake-list">
+          <li>Actively participate in handoff sessions — ask questions, surface ambiguity before building</li>
+          <li>Log improvised UI decisions in ticket comments rather than deciding silently</li>
+          <li>A ticket isn't "done" until design QA is passed — update the definition of done</li>
+          <li>Set up Style Dictionary pipeline and Storybook during the walk phase</li>
+          <li>Integrate visual regression and accessibility tooling in the run phase</li>
+        </ul>
+      </div>
+      <div class="stake-card">
+        <div class="stake-role">Role</div>
+        <div class="stake-name">QA</div>
+        <ul class="stake-list">
+          <li>Treat Functional QA and Design QA as separate passes with separate references</li>
+          <li>Functional QA runs against ticket acceptance criteria, not visual judgment</li>
+          <li>Support designer with QA environment and device access during Design QA</li>
+          <li>Participate in UAT scenario design so testing is structured from the start</li>
+          <li>Own accessibility testing as part of functional QA baseline</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:24px;">
+      <span class="callout-icon">🔑</span>
+      <div><strong>For leadership / tool approvals specifically:</strong> The crawl phase requires no new tools or budget. The walk phase requires Figma organization plan access (if not already in place) and potentially a Tokens Studio license. The run phase requires CI integration permissions and a budget for visual regression tooling (Chromatic or Percy). These are the three asks that need leadership alignment before the walk and run phases begin.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: CHECKLIST -->
+  <section id="checklist">
+    <div class="section-label">Section 5 — Design QA</div>
+    <div class="section-title">The Design Testing Checklist</div>
+    <p class="section-lead">Use this during the Design QA pass — after functional QA, before UAT. The designer owns this review. Items are ordered to match how a reviewer naturally moves through a feature: preconditions → visual fidelity → behavior → resilience → environment → accessibility. Items are interactive — check them off as you go.</p>
+
+    <!-- PRE-FLIGHT GATE -->
+    <div class="preflight">
+      <div class="preflight-label">Before you start</div>
+      <div class="preflight-title">Pre-flight Gate</div>
+      <div class="preflight-sub">Confirm all five conditions are true before opening the checklist. If any are false, return the build — design QA on an incomplete build produces noise, not signal.</div>
+      <div class="preflight-grid">
+        <div class="preflight-item">The feature is dev-complete — not "mostly done." All screens and states are built.</div>
+        <div class="preflight-item">Real or realistic content is loaded. No lorem ipsum, placeholder images, or "TBD" copy.</div>
+        <div class="preflight-item">All assets are loading: fonts, icons, and images are rendering — no broken asset requests in the console.</div>
+        <div class="preflight-item">The designer has access to the specific build URL or branch being reviewed.</div>
+        <div class="preflight-item">The corresponding Figma file is open and at the correct version — not a stale or in-progress frame.</div>
+      </div>
+    </div>
+
+    <!-- TOKEN PRINCIPLE -->
+    <div class="token-principle">
+      <strong>Token Adherence Principle — applies to every section below.</strong> All visual values — spacing, color, typography, elevation, border radius, and shadow — must reference named design tokens. Any hardcoded value that doesn't map to a token requires explicit designer sign-off and a decision log entry. This principle is stated once here and assumed throughout; individual sections will not repeat it.
+    </div>
+
+    <div class="progress-label"><span class="progress-count" id="progress-count">0 of 58</span> items checked</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+    <!-- 1. SPACING & LAYOUT -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">📐</span>
+        <span class="checklist-header-title">Spacing &amp; Layout</span>
+        <span class="checklist-header-count">5 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Container widths and max-widths match Figma.</strong><span class="severity sev-high">High</span> Verify the primary content container width, section max-widths, and any fixed-width elements against the Figma frame dimensions. Use browser dev tools to inspect computed widths — not a visual guess.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Alignment is exact — not just "close."</strong><span class="severity sev-high">High</span> Verify flex/grid alignment against the Figma spec using dev tools or a pixel overlay. Pay extra attention to icon-to-label alignment, baseline alignment in multi-column rows, and inline element spacing — these are the most commonly eyeballed and most commonly wrong.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Visual hierarchy matches the intended reading order.</strong><span class="severity sev-medium">Medium</span> Confirm that size, weight, and spacing relationships between heading levels, body copy, and supporting text produce the same visual hierarchy as Figma. Check at 100% zoom — designers work at 100%, reviewers should too.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Component internal spacing is consistent across all instances.</strong> Verify that padding within repeating components (cards, list items, table rows) is uniform across every instance on the page — not just the first one. Dynamic content length can silently collapse spacing in later instances.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Stacking order and z-index layering match design intent.</strong> Modals, tooltips, dropdowns, sticky headers, and overlapping elements appear in the correct visual layer. Verify no unintended element clipping, and that overlays properly obscure background content.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. TYPOGRAPHY -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">🔤</span>
+        <span class="checklist-header-title">Typography</span>
+        <span class="checklist-header-count">5 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Font loads correctly and doesn't cause visible reflow.</strong><span class="severity sev-high">High</span> Throttle the network in dev tools and confirm that the web font loads without a jarring flash of unstyled text (FOUT) or layout shift as the font metric changes. Verify the fallback font stack is set — not just "sans-serif" — so the fallback is close in proportion to the web font.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Letter spacing, text-transform, and font variant settings are applied correctly.</strong> Uppercase labels, headline tracking, and small-caps text are commonly dropped in the build. Verify these against Figma individually — they don't transfer through copy-paste and are easy to miss.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Long text wraps correctly; short text doesn't create layout gaps.</strong><span class="severity sev-high">High</span> Test each text element with both minimum content (1–2 words) and maximum realistic content (2–3× expected length). Verify overflow behavior — truncation with ellipsis, line clamping, or full wrap — matches the Figma spec and doesn't break the surrounding layout.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Line height doesn't clip descenders or create tight paragraph spacing.</strong> Check that tighter line heights on headlines don't clip letters like g, p, y. Verify paragraph spacing between body copy blocks matches Figma — especially in CMS-driven or rich text areas where spacing is often reset by the editor.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Primary content (heroes, headlines, pull quotes) wraps cleanly across breakpoints.</strong> Verify that hero text and section headers don't produce awkward one-word final lines (widows) or odd breaks at tablet and mobile sizes. These are rarely specced but always noticed.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. COLOR & CONTRAST -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">🎨</span>
+        <span class="checklist-header-title">Color &amp; Contrast</span>
+        <span class="checklist-header-count">4 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Brand-critical colors verified on screen, not just in Figma.</strong><span class="severity sev-high">High</span> Colors render differently in browser vs. Figma due to color profile differences. Do a side-by-side comparison of Golf Pride brand colors (greens, accents) between Figma and the browser at 100% zoom. Verify brand colors match the Golf Pride brand spec exactly — "close enough" ships as wrong.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Text contrast passes WCAG AA at minimum — in all states.</strong><span class="severity sev-critical">Critical</span> Body text / background combinations require 4.5:1; large text (18px+ regular, 14px+ bold) requires 3:1. Check every interactive state — hover, focus, disabled — not just default. Note: the automated axe audit in the Accessibility section also catches contrast failures; don't run both manually.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Theme switching (if applicable) applies completely — no orphaned hardcoded values.</strong> If the design supports dark/light mode, verify that every element responds correctly to theme change, including SVGs with inline fill colors, images with text overlays, and gradient backgrounds. Any hardcoded color value will not switch.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Status and state differentiation doesn't rely on color alone.</strong> Error, success, warning, and disabled states each use a secondary differentiator — icon, label, pattern, or texture — in addition to color. This is both an accessibility requirement and a UX quality bar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. COMPONENT FIDELITY -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">🧩</span>
+        <span class="checklist-header-title">Component Fidelity</span>
+        <span class="checklist-header-count">5 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>All component variants are implemented — none silently omitted.</strong><span class="severity sev-critical">Critical</span> Every variant in Figma (size: sm/md/lg, style: primary/secondary/ghost, type: icon-left/icon-only) has a built counterpart. If a variant was deferred, it must be explicitly flagged in the ticket — not quietly dropped.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>All interactive states verified individually.</strong><span class="severity sev-critical">Critical</span> For every interactive component: default, hover, focus, active/pressed, disabled, loading, and selected/checked — each triggered and compared to Figma. States not specced in Figma must be confirmed with the designer before design QA closes; developer-improvised states are a QA failure, not an open question.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Icon sizing, stroke weight, and optical centering match the spec.</strong> Icons are the correct size variant (16/20/24px), use the correct stroke weight for the context, and are optically — not just mathematically — centered within their container. A 24px icon in a 48px button that isn't optically centered is a common failure.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Net-new components (outside the design system) are flagged and reviewed.</strong> If a developer built a component that doesn't exist in the Figma system, it requires a designer review and either approval as a documented exception or addition to the design system. It should not ship without that review.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Focus rings are on-brand and visible — not suppressed or browser-default.</strong><span class="severity sev-high">High</span> Tab through every interactive element. Focus rings should use the design's defined focus style, appear on keyboard navigation (and optionally on click, per the spec), and never be <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">outline: none</code> without a custom replacement.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. IMAGES & MEDIA -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">🖼</span>
+        <span class="checklist-header-title">Images &amp; Media</span>
+        <span class="checklist-header-count">5 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Images are sharp on retina/HiDPI displays.</strong><span class="severity sev-high">High</span> On a retina screen, verify that raster images (JPG/PNG) are served at 2× resolution or delivered via <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">srcset</code>. A 400px image displayed at 200px CSS size will appear blurry on a 2× display. SVGs are inherently resolution-independent and exempt.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Image crop, focal point, and aspect ratio match design intent at all breakpoints.</strong> Verify that <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">object-fit</code> and <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">object-position</code> are set correctly so the subject of the image isn't cropped out at narrower viewports. An image that looks correct on desktop can cut off a face or product on mobile.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Broken image state is graceful — the layout doesn't collapse.</strong> Remove or block an image request in dev tools and verify the fallback renders correctly: correct dimensions preserved, no layout collapse, alt text visible if applicable. This is especially important for user-generated or CMS-driven image slots.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Decorative SVG icons use <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">aria-hidden="true"</code>; functional SVG icons have labels.</strong> SVG icons used purely for decoration should be hidden from screen readers. SVG icons that communicate meaning (status icons, action triggers) need an <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">aria-label</code> or a visually-hidden label.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Images aren't oversized for their container.</strong> A 3000px source image served into a 400px container is a performance and quality issue. Verify that image dimensions are reasonably close to their rendered size. Oversized images also sometimes cause subtle layout shifts as they load.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. INTERACTION & MOTION -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">✨</span>
+        <span class="checklist-header-title">Interaction &amp; Motion</span>
+        <span class="checklist-header-count">5 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Transition timing and easing match the motion spec — not defaulted to linear.</strong><span class="severity sev-high">High</span> Verify that duration and easing curves match the Figma prototype or motion spec. <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">linear</code> easing feels mechanical; most design transitions use ease-in-out or a custom cubic-bezier. Check the computed CSS in dev tools — don't assume it's correct because it animates.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Skeleton loaders and loading states match the design spec in shape and timing.</strong><span class="severity sev-high">High</span> Throttle the network and verify: skeleton dimensions match the content they're standing in for, shimmer direction and speed match the spec, and the transition from skeleton to content is smooth — not an abrupt swap.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Empty states are designed, not improvised.</strong> Every list, feed, table, or data widget has an explicit empty state. Verify illustration, copy, and CTA (if applicable) match the Figma spec. An empty state that reads "No data available" in a system font is a developer placeholder, not a shipped feature.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Error and validation states appear at the correct moment, location, and with approved copy.</strong> Inline errors appear below the relevant input; toast/snackbar messages appear at the designed screen position; validation triggers on the correct event (blur vs. submit). Verify all error copy matches approved content — not developer-written fallbacks.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>All animations respect <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">prefers-reduced-motion</code>.</strong> Enable Reduce Motion in your OS settings and verify that all transitions and animations either stop or are replaced with a simpler, non-motion alternative. This is both an accessibility requirement and a progressive enhancement quality bar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. CONTENT RESILIENCE -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">🧪</span>
+        <span class="checklist-header-title">Content Resilience</span>
+        <span class="checklist-header-count">6 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>No lorem ipsum or placeholder content is visible in the build.</strong><span class="severity sev-critical">Critical</span> Any placeholder text, "TBD" copy, stock image watermarks, or dummy data in the build is a pre-flight failure. If this is discovered mid-review, stop and return the build — content resilience testing against fake content produces false confidence.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Minimum and maximum content lengths are tested for every dynamic text element.</strong><span class="severity sev-high">High</span> Test each text-bearing component at both ends: a very short value (e.g., "Li") and a realistic maximum (e.g., a 40-character name, a 3-line description). The layout should absorb both without breaking, collapsing, or overlapping adjacent elements.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Null and missing field states are graceful.</strong><span class="severity sev-high">High</span> Remove optional data fields — a missing avatar, a product with no description, a user with no last name — and verify the layout degrades cleanly. Missing optional content should render a neutral fallback, not an empty container, broken layout, or "undefined."
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Numbers, currency, and dates are formatted correctly.</strong> Verify that large numbers use appropriate separators (1,000 vs 1000), currency symbols and decimal places are consistent, and dates render in the expected format for the target locale. These are often handled in code as raw API output and rarely specced in Figma.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Pluralization and dynamic copy is correct.</strong> Any string that changes based on a count — "1 result" vs. "2 results," "1 item in your cart" vs. "3 items" — is grammatically correct in both the singular and plural forms. Hardcoded plural strings are a common, embarrassing oversight.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>All approved copy is final — no developer-written fallback strings visible.</strong> Scan the built feature for any copy that wasn't in the Figma spec or content doc: button labels, error messages, tooltip text, confirmation dialogs. Developer-authored copy frequently ships without review and erodes brand voice.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. RESPONSIVENESS -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">📱</span>
+        <span class="checklist-header-title">Responsiveness</span>
+        <span class="checklist-header-count">4 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Step 1 — Verify all breakpoints in browser emulation first.</strong><span class="severity sev-critical">Critical</span> Use Chrome DevTools responsive mode to step through every breakpoint defined in Figma. Confirm layout reflows (column collapses, element hiding, padding adjustments) match the design exactly — same stacking order, same spacing. Also test at 320px, the practical minimum width for modern mobile.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>No horizontal overflow at any breakpoint.</strong><span class="severity sev-critical">Critical</span> A horizontal scrollbar at any defined breakpoint is an immediate flag. In emulation, toggle "Show scrollbars" and scan each breakpoint. Horizontal overflow is often caused by a single element — fixed-width container, pre-wrapped text, or non-responsive image — that's easy to miss visually.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Step 2 — Confirm on physical devices after emulation passes.</strong><span class="severity sev-high">High</span> Emulation doesn't replicate font rendering differences, scroll inertia, tap delay, safe area insets (iPhone notch/home bar), or some CSS rendering quirks. Once emulation passes, verify on at least one iOS and one Android device targeting the most common screen sizes for Golf Pride's audience.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Touch tap targets are minimum 44×44px on mobile — visually smaller is fine, physically larger is required.</strong><span class="severity sev-high">High</span> All buttons, links, and icon controls must have a physically tappable area of at least 44×44px. The visual element can be smaller; use padding to extend the hit area. Use Chrome's "Emulate touch" and inspect computed sizes.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. CROSS-BROWSER BASELINE -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">🌐</span>
+        <span class="checklist-header-title">Cross-browser Baseline</span>
+        <span class="checklist-header-count">4 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Safari (macOS and iOS) is tested explicitly — not assumed to match Chrome.</strong><span class="severity sev-high">High</span> Safari has a distinct rendering engine (WebKit) and swallows specific bugs: <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">position: sticky</code> failures, flexbox gap issues, <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">gap</code> in older versions, scroll behavior, and date/time input rendering. If the Golf Pride audience includes iOS users, Safari is a primary target, not an afterthought.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Windows font rendering is verified if the audience includes Windows users.</strong><span class="severity sev-medium">Medium</span> ClearType (Windows) renders fonts at lower subpixel quality than macOS. A typeface that looks refined on Mac can appear noticeably heavier or blurrier on Windows Chrome. Test heading typography on Windows — either a physical machine or a Windows VM.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Firefox is spot-checked for layout and form element differences.</strong> Firefox renders some form controls (selects, checkboxes, radio buttons, date pickers) with its own default styling that can override custom styles. Verify custom form elements render correctly and that any <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">-webkit-</code>-prefixed CSS has Firefox equivalents.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>No console errors in any tested browser.</strong> Open the browser console and verify that the reviewed feature produces zero errors in Chrome, Safari, and Firefox. JavaScript errors that don't visibly break the UI often indicate broken state management or missing fallbacks that will surface under real user conditions.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. PERFORMANCE (VISIBLE) -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">⚡</span>
+        <span class="checklist-header-title">Performance (Visible)</span>
+        <span class="checklist-header-count">4 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>No visible layout shift on page load.</strong><span class="severity sev-high">High</span> Load the page on a throttled connection (Chrome DevTools → Slow 3G) and observe whether content jumps as fonts load, images render, or async components insert. Layout shift is a design quality problem — it makes the product feel unstable — as well as a Core Web Vitals metric (CLS).
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Web font loading doesn't produce a jarring content flash.</strong> Verify that font loading strategy is set to <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">font-display: swap</code> or <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">optional</code> and that the fallback font stack is close enough in metrics that reflow on font load is minimal. A jarring FOUT — where a page snaps from one typeface to another — is a visual quality failure, not just a performance one.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Skeleton/loading states are visible for a perceivably appropriate duration.</strong> On a fast connection, skeletons should not flash in and out in under 100ms — that flicker is more jarring than showing nothing. If loading is near-instant, consider whether the skeleton should be suppressed below a minimum threshold, which should be defined in the spec.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Images are appropriately sized for their containers.</strong> Check the Network tab in dev tools and verify that image file sizes are reasonable relative to their display dimensions. A hero image over 300–400kb on a production site, or a 2MB image served into a 120px avatar slot, is a visible quality problem — images load progressively and the degraded state is visible to users.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. ACCESSIBILITY -->
+    <div class="checklist-section">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">♿</span>
+        <span class="checklist-header-title">Accessibility</span>
+        <span class="checklist-header-count">6 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>All interactive elements reachable and operable by keyboard alone.</strong><span class="severity sev-critical">Critical</span> Tab through the entire feature. Every button, link, form control, modal trigger, and menu must be focusable and activatable without a mouse. Tab order must follow the visual reading order — not the DOM order if those differ.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Modal and drawer focus is trapped while open, and returns on close.</strong><span class="severity sev-critical">Critical</span> When a modal opens, keyboard focus must move into it and be contained — tabbing should not reach background content. When the modal closes (via button, Escape, or backdrop click), focus must return to the element that triggered it. This is the most common keyboard accessibility failure in component-rich UIs.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Icon-only buttons and controls have accessible labels.</strong><span class="severity sev-critical">Critical</span> Any button or control with only an icon must have an <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">aria-label</code> or visually-hidden text. Activate a screen reader (VoiceOver on Mac, NVDA on Windows) and navigate to these elements — the label read should be the action, not "button" or silence.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Form inputs have associated labels — placeholder text is not a substitute.</strong><span class="severity sev-critical">Critical</span> Every form field must have a <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">&lt;label&gt;</code> element linked via <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">for</code>/<code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">id</code> or <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">aria-label</code>. Placeholder text disappears when the user types, provides no persistent label, and isn't reliably read by screen readers as a field label.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Focus moves to a logical location after async actions.</strong><span class="severity sev-high">High</span> After form submission, page navigation, or a significant async state change (e.g., a panel loading content), verify that focus moves to a relevant element — the success message, the new content heading, or the next logical step — rather than being lost or staying on a now-irrelevant button.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Run axe DevTools and resolve all Critical and Serious violations before close.</strong> Use the axe DevTools browser extension. Resolve every "Critical" and "Serious" violation before design QA closes — these map directly to WCAG 2.1 AA failures. "Moderate" and "Minor" violations are logged in the backlog. Note: axe also catches contrast issues flagged in the Color section — do not double-count.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. FORMS (CONDITIONAL) -->
+    <div class="checklist-section conditional">
+      <div class="checklist-header">
+        <span class="checklist-header-icon">📝</span>
+        <span class="checklist-header-title">Forms <span class="conditional-badge">Conditional</span></span>
+        <span class="checklist-header-count">5 items</span>
+      </div>
+      <div class="checklist-items">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Browser autofill styling doesn't override the design's input colors.</strong><span class="severity sev-high">High</span> Browsers inject a yellow or blue background on autofilled fields. Verify that the build overrides <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">:-webkit-autofill</code> styles so autofilled inputs visually match the non-autofilled design. This is a nearly universal oversight that's jarring on first use.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Input types are correctly specified for mobile keyboard optimization.</strong> Verify that email fields use <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">type="email"</code>, phone fields use <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">type="tel"</code>, and numeric fields use <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">type="number"</code> or <code style="font-family:DM Mono,monospace;font-size:12px;background:#f3f4f6;padding:1px 5px;border-radius:3px;">inputmode="numeric"</code>. The correct type triggers the right mobile keyboard — a text keyboard for an email field is a real UX failure.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Disabled and read-only states are visually distinct from each other.</strong> Disabled inputs (user cannot interact) and read-only inputs (data is shown but not editable) are frequently confused in implementation. Verify that each has its own visual treatment matching the Figma spec — they should not look identical.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Required field indicators are visible and consistent.</strong> Required fields should be marked consistently — asterisk, "Required" label, or per the design spec — on every required field in the form, not just the first one. The pattern should match what's in Figma.
+          </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text">
+            <strong>Submission success and failure states are designed and implemented — not improvised.</strong><span class="severity sev-high">High</span> Verify that both the success state (confirmation message, page redirect, or inline confirmation) and the failure state (server error, network timeout) were specced in Figma and match the build. The submission feedback moment is high-stakes UX and should never be a developer-written fallback.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:12px;color:var(--ink-xlight);margin-bottom:6px;padding-top:4px;">* The <strong>Forms</strong> section (dashed border) is conditional — apply it only when the feature being reviewed includes form inputs.</p>
+    <p class="checklist-print-note">This checklist is also available for print — use Cmd+P or File → Print to generate a PDF version for offline use or client documentation.</p>
+  </section>
+
+</div><!-- /page -->
+
+<footer>
+  <div class="foot-label">Prepared by <strong>Arro Labs</strong> for Golf Pride · Design Quality Initiative · 2025</div>
+  <div class="foot-label">Framework version 1.0 · Crawl → Walk → Run</div>
+</footer>
+
+<script>
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.check-item');
+    const checked = document.querySelectorAll('.check-item.checked');
+    const count = checked.length;
+    const total = all.length;
+    const pct = total > 0 ? (count / total) * 100 : 0;
+    document.getElementById('progress-count').textContent = count + ' of ' + total;
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
