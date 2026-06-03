@@ -934,6 +934,346 @@
       font-weight: 500;
     }
 
+    /* ── CURRENT STATE SECTION ── */
+    .scoring-concept {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 24px 22px;
+      margin: 32px 0;
+    }
+
+    .scoring-concept-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 18px;
+    }
+
+    .scoring-cols {
+      display: grid;
+      grid-template-columns: 1fr 32px 1fr 32px 1fr 32px auto;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .scoring-col {
+      background: #FBF6EE;
+      border: 1px solid #E8DCC8;
+      border-radius: 6px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+
+    .sc-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #A07030;
+      margin-bottom: 5px;
+    }
+
+    .sc-max {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .scoring-op {
+      text-align: center;
+      font-size: 18px;
+      color: var(--border);
+      font-weight: 300;
+    }
+
+    .scoring-total {
+      background: var(--forest);
+      border-radius: 6px;
+      padding: 14px 18px;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .st-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 4px;
+    }
+
+    .st-value {
+      font-size: 13px;
+      color: var(--gold-light);
+    }
+
+    .scoring-note {
+      font-size: 13px;
+      color: var(--text-light);
+      font-style: italic;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Variant blindness */
+    .variant-blindness {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 28px 0;
+    }
+
+    .vb-header {
+      padding: 14px 20px;
+      background: #FDFAF6;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .vb-header-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .vb-scenario {
+      font-size: 12px;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    .vb-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .vb-table th {
+      padding: 10px 18px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      border-bottom: 1px solid var(--border-light);
+      background: #FDFAF6;
+    }
+
+    .vb-table th.center-col, .vb-table td.center-col { text-align: center; }
+
+    .vb-table td {
+      padding: 13px 18px;
+      font-size: 14px;
+      color: var(--text-mid);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .vb-table tr:last-child td { border-bottom: none; }
+
+    .vb-table td.grip-name {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .vb-table td.total-col {
+      font-family: 'Fraunces', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--forest);
+    }
+
+    .vb-alert {
+      padding: 14px 20px;
+      background: #FEF8EE;
+      border-top: 1px solid #EED8A8;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #7A5010;
+      line-height: 1.55;
+    }
+
+    .vb-alert-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #C8903A;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    /* Weakness items */
+    .weakness-list-cs {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 36px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .weakness-item {
+      display: grid;
+      grid-template-columns: 188px 1fr;
+      background: var(--white);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .weakness-item:last-child { border-bottom: none; }
+
+    .weakness-label {
+      padding: 20px 18px;
+      background: #FBF8F3;
+      border-right: 1px solid var(--border-light);
+      border-left: 3px solid #C8903A;
+    }
+
+    .weakness-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #B87828;
+      margin-bottom: 5px;
+    }
+
+    .weakness-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .weakness-body {
+      padding: 20px 22px;
+    }
+
+    .weakness-body p {
+      font-size: 14px;
+      color: var(--text-mid);
+      margin-bottom: 0;
+      line-height: 1.65;
+    }
+
+    /* Comparison table */
+    .cs-comparison {
+      margin: 36px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .csc-header {
+      display: grid;
+      grid-template-columns: 190px 1fr 1fr;
+      background: var(--forest);
+    }
+
+    .csc-header-cell {
+      padding: 13px 18px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .csc-header-cell.dim-col   { color: rgba(255,255,255,0.3); }
+    .csc-header-cell.old-col   { color: #D4AE5A; border-left: 1px solid rgba(255,255,255,0.1); }
+    .csc-header-cell.new-col   { color: #8FC49A; border-left: 1px solid rgba(255,255,255,0.1); }
+
+    .csc-row {
+      display: grid;
+      grid-template-columns: 190px 1fr 1fr;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--white);
+    }
+
+    .csc-row:last-child { border-bottom: none; }
+    .csc-row:nth-child(odd) { background: #FDFAF6; }
+
+    .csc-dim {
+      padding: 15px 18px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--text-mid);
+      border-right: 1px solid var(--border-light);
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+
+    .csc-old {
+      padding: 15px 18px;
+      font-size: 13.5px;
+      color: var(--text-mid);
+      line-height: 1.55;
+      border-right: 1px solid var(--border-light);
+    }
+
+    .csc-new {
+      padding: 15px 18px;
+      font-size: 13.5px;
+      color: var(--text-mid);
+      line-height: 1.55;
+    }
+
+    .csc-new strong { color: var(--forest-mid); font-weight: 600; }
+
+    .gap-flag {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #B87828;
+      background: #FEF6E6;
+      border: 1px solid #E8C880;
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-left: 5px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .gain-flag {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2A6640;
+      background: #EAF3EC;
+      border: 1px solid #A0C8A8;
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-left: 5px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 720px) {
+      .scoring-cols { grid-template-columns: 1fr 20px 1fr 20px 1fr 20px auto; }
+      .weakness-item { grid-template-columns: 1fr; }
+      .weakness-label { border-left: 3px solid #C8903A; border-right: none; border-bottom: 1px solid var(--border-light); }
+      .csc-header { grid-template-columns: 1fr; }
+      .csc-row { grid-template-columns: 1fr; }
+      .csc-dim { border-right: none; border-bottom: 1px solid var(--border-light); background: #F5F1EA; }
+      .csc-old { border-right: none; border-bottom: 1px solid var(--border-light); }
+      .csc-header-cell.old-col, .csc-header-cell.new-col { border-left: none; border-top: 1px solid rgba(255,255,255,0.1); }
+      .vb-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+
     /* ── UTILITIES ── */
     .spacer-sm { height: 20px; }
     .spacer-md { height: 36px; }
@@ -974,6 +1314,7 @@
     <li><a href="#database">Database</a></li>
     <li><a href="#fragility">Fragility</a></li>
     <li><a href="#principles">Principles</a></li>
+    <li><a href="#current-state">Old vs. New</a></li>
   </ul>
 </nav>
 
@@ -1447,7 +1788,253 @@
 
 </main>
 
-<!-- CLOSING -->
+<!-- SECTION 10: CURRENT STATE -->
+<div style="background: var(--cream);">
+<main class="document">
+  <section id="current-state" style="border-top: 1px solid var(--border-light);">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2>The Existing System: What It Does and Where It Falls Short</h2>
+    </div>
+
+    <p>The current Grip Finder runs on Adobe Experience Manager and has been live long enough to generate meaningful usage data. Its recommendation logic is built around a per-grip affinity scorecard: content authors hand-assigned point values to each grip for every possible quiz answer, across three scored dimensions. When a user completes the quiz, the system filters by size, sums those three values based on the answers given, and sorts grips by their total. The highest score wins.</p>
+
+    <p>This approach was a reasonable starting point for a quiz of this complexity. But a technical analysis of the production scorecard reveals structural gaps that explain the result-page CTR problem directly — and make a clear case for the architecture described in this brief.</p>
+
+    <h3 style="margin: 36px 0 16px; font-size: 18px;">How the current scoring model works</h3>
+
+    <p>Three quiz questions generate points. Size is a hard filter with no point contribution. For each of the three scored questions — Moisture, Firmness, and Texture — every grip carries a hand-authored value from 0 to 10 representing how well it matches that answer. Those three values are summed. The grip with the highest sum is recommended.</p>
+
+    <div class="scoring-concept">
+      <div class="scoring-concept-label">Current Scoring Formula</div>
+      <div class="scoring-cols">
+        <div class="scoring-col">
+          <div class="sc-label">Moisture</div>
+          <div class="sc-max">max 10 pts</div>
+        </div>
+        <div class="scoring-op">+</div>
+        <div class="scoring-col">
+          <div class="sc-label">Firmness</div>
+          <div class="sc-max">max 10 pts</div>
+        </div>
+        <div class="scoring-op">+</div>
+        <div class="scoring-col">
+          <div class="sc-label">Texture</div>
+          <div class="sc-max">max 10 pts</div>
+        </div>
+        <div class="scoring-op">=</div>
+        <div class="scoring-total">
+          <div class="st-label">Total</div>
+          <div class="st-value">max 30 pts</div>
+        </div>
+      </div>
+      <div class="scoring-note">All three dimensions contribute equally — a texture preference is worth exactly as much as a feel preference in the final recommendation.</div>
+    </div>
+
+    <p>The point values themselves are not computed from product attributes — they are manually entered by content authors in the CMS, one value per grip per answer option. That means the entire recommendation system is only as current and accurate as the last time an author updated a content fragment.</p>
+
+    <h3 style="margin: 36px 0 16px; font-size: 18px;">The variant blindness problem</h3>
+
+    <p>The most structurally revealing flaw in the current system is what happens when you look at grips within the same family. A technical analysis of the production scorecard finds that grip variants — ALIGN and non-ALIGN versions of the same grip, Plus4 and standard versions — carry <strong>byte-for-byte identical affinity scores</strong> across all three scored dimensions. There is no question in the current quiz that can distinguish them, and no data in the scorecard that would allow the algorithm to choose between them on merit.</p>
+
+    <div class="variant-blindness">
+      <div class="vb-header">
+        <span class="vb-header-label">Variant Blindness — Illustrated</span>
+        <span class="vb-scenario">Scenario: golfer answers wet conditions + firm feel + rough texture</span>
+      </div>
+      <table class="vb-table">
+        <thead>
+          <tr>
+            <th>Grip</th>
+            <th class="center-col">Moisture (Wet)</th>
+            <th class="center-col">Firmness (Firm)</th>
+            <th class="center-col">Texture (Rough)</th>
+            <th class="center-col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="grip-name">MCC</td>
+            <td class="center-col">8</td>
+            <td class="center-col">7</td>
+            <td class="center-col">8</td>
+            <td class="center-col total-col">23</td>
+          </tr>
+          <tr>
+            <td class="grip-name">MCC ALIGN</td>
+            <td class="center-col">8</td>
+            <td class="center-col">7</td>
+            <td class="center-col">8</td>
+            <td class="center-col total-col">23</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="vb-alert">
+        <div class="vb-alert-dot"></div>
+        <span>Identical scores. The algorithm has no mechanism to distinguish MCC from MCC ALIGN — or any Plus4 variant from its standard counterpart. The recommended variant is determined by database query order, not by anything the golfer expressed. This pattern holds across every within-family pair in the current catalog.</span>
+      </div>
+    </div>
+
+    <p>The same blind spot applies to Plus4 technology. The current quiz never asks a question that routes golfers toward the grip-pressure-reducing Plus4 family, so those grips are effectively invisible to the recommendation logic unless they happen to outscore their standard counterparts by chance.</p>
+
+    <h3 style="margin: 36px 0 16px; font-size: 18px;">Structural weaknesses</h3>
+
+    <div class="weakness-list-cs">
+
+      <div class="weakness-item">
+        <div class="weakness-label">
+          <div class="weakness-tag">Weakness 01</div>
+          <div class="weakness-name">Equal dimension weighting</div>
+        </div>
+        <div class="weakness-body">
+          <p>Moisture, Firmness, and Texture each contribute a maximum of 10 points — the system treats all three as equally important to a recommendation. In practice, feel/firmness is the primary differentiator for most golfers and the most powerful single filter in the catalog. The current model has no mechanism to reflect that hierarchy; a texture answer carries the same weight as a feel answer in every recommendation.</p>
+        </div>
+      </div>
+
+      <div class="weakness-item">
+        <div class="weakness-label">
+          <div class="weakness-tag">Weakness 02</div>
+          <div class="weakness-name">Variant blindness — ALIGN and Plus4 invisible</div>
+        </div>
+        <div class="weakness-body">
+          <p>ALIGN variants and Plus4 variants share identical scorecards with their standard counterparts. No question selects for the ALIGN alignment ridge; no question routes toward Plus4's grip-pressure technology. When a golfer receives a recommendation, the specific variant they see is determined by query order — not by their answers. These are among the most differentiated products in the catalog, and the quiz cannot see them.</p>
+        </div>
+      </div>
+
+      <div class="weakness-item">
+        <div class="weakness-label">
+          <div class="weakness-tag">Weakness 03</div>
+          <div class="weakness-name">Three dimensions entirely unasked</div>
+        </div>
+        <div class="weakness-body">
+          <p>Grip pressure, alignment preference, and the sweaty-hands moisture path are not represented in any current question. Grip pressure alone affects 8 of the 19 confirmed grips in the catalog — all light-preferred variants are functionally inaccessible to the quiz. These aren't edge cases; they represent a significant portion of the product range that the current quiz cannot recommend on merit.</p>
+        </div>
+      </div>
+
+      <div class="weakness-item">
+        <div class="weakness-label">
+          <div class="weakness-tag">Weakness 04</div>
+          <div class="weakness-name">Abstract feel question, no experiential anchor</div>
+        </div>
+        <div class="weakness-body">
+          <p>The current Q3 offers three options: Firm, Soft, and "Best of both." These are technical adjectives with no reference point for a golfer who hasn't held multiple grip types. The result is measurable: Q3 generates a 7.6% abandonment rate and over two and a half minutes of average dwell time — roughly 8× longer than every other question. The question asks for a judgment the user cannot confidently make.</p>
+        </div>
+      </div>
+
+      <div class="weakness-item">
+        <div class="weakness-label">
+          <div class="weakness-tag">Weakness 05</div>
+          <div class="weakness-name">Result page — no reasoning, no trust</div>
+        </div>
+        <div class="weakness-body">
+          <p>The current result page shows a ranked list or "Top Pick" output with no explanation copy. There is no connection between the user's answers and the product they're shown — no "here's why this grip is right for you." Trust in a recommendation is built through explanation; without it, the result page reads as a product listing, not a fitting outcome. This is the direct mechanism behind the 89% of completers who don't click through.</p>
+        </div>
+      </div>
+
+      <div class="weakness-item">
+        <div class="weakness-label">
+          <div class="weakness-tag">Weakness 06</div>
+          <div class="weakness-name">Manual tiebreaker encodes merchandising, not merit</div>
+        </div>
+        <div class="weakness-body">
+          <p>When two grips score identically, a static tiebreaker value decides the winner. These values were hand-set by authors — including deliberate fractional values (e.g., 4.1 vs. 4.0) engineered to force a preferred product to the top of a tie. The tiebreaker is a merchandising instrument, not a recommendation signal. The golfer's stated preferences play no role in resolving the tie.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 style="margin: 40px 0 16px; font-size: 18px;">Current system vs. redesigned system</h3>
+
+    <p>The table below maps the key architectural dimensions of the current system against the redesigned approach. Each row represents a specific decision point where the current system's structure produces a known limitation — and the redesign closes it.</p>
+
+    <div class="cs-comparison">
+      <div class="csc-header">
+        <div class="csc-header-cell dim-col">Dimension</div>
+        <div class="csc-header-cell old-col">Current System</div>
+        <div class="csc-header-cell new-col">Redesigned System</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Scoring Model</div>
+        <div class="csc-old">Hand-authored affinity scores per grip, maintained in CMS by content authors <span class="gap-flag">Manual</span></div>
+        <div class="csc-new"><strong>Derived from intrinsic product attributes + configurable weights.</strong> <span class="gain-flag">Systematic</span> No per-grip manual authoring.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Dimension Weighting</div>
+        <div class="csc-old">Equal — Moisture, Firmness, and Texture each max 10 pts. No dimension outweighs another. <span class="gap-flag">Flat</span></div>
+        <div class="csc-new"><strong>Unequal and configurable.</strong> <span class="gain-flag">Weighted</span> Feel carries 40% of the total scoring weight. Weights reflect actual filtering power.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Questions Shown</div>
+        <div class="csc-old">4 fixed questions, always shown regardless of path <span class="gap-flag">Static</span></div>
+        <div class="csc-new"><strong>Up to 6 questions, conditionally shown</strong> <span class="gain-flag">Adaptive</span> based on remaining candidates. Each question earns its place.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Feel Question</div>
+        <div class="csc-old">"Firm / Soft / Best of both" — 3 abstract options, no experiential anchoring <span class="gap-flag">High friction</span></div>
+        <div class="csc-new"><strong>5-level outcome-based scale</strong> <span class="gain-flag">Reframed</span> with experiential language. Options describe what the golfer wants to feel, not what the grip technically is.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Grip Pressure / Plus4</div>
+        <div class="csc-old">Not asked. Plus4 and standard variants carry identical scorecards — indistinguishable to the algorithm. <span class="gap-flag">Absent</span></div>
+        <div class="csc-new"><strong>Q4: dedicated behavioral question.</strong> <span class="gain-flag">New</span> Routes to Plus4/Plus2 family based on expressed grip behavior.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">ALIGN Technology</div>
+        <div class="csc-old">No question. ALIGN and non-ALIGN variants share byte-for-byte identical scores. <span class="gap-flag">Absent</span></div>
+        <div class="csc-new"><strong>Q5: dedicated question + algorithm modifier layer.</strong> <span class="gain-flag">New</span> ALIGN preference surfaces the right variant, not a random one.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Variant Differentiation</div>
+        <div class="csc-old">Within-family variants (ALIGN, Plus4, Teams) share identical scorecards. Variant choice is determined by query order. <span class="gap-flag">Blind</span></div>
+        <div class="csc-new"><strong>Per-SKU distinct attributes across all dimensions.</strong> <span class="gain-flag">Resolved</span> The algorithm can now choose within a family on merit.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Result Page</div>
+        <div class="csc-old">Ranked list or "Top Pick" grid — no explanation, no connection to the user's answers <span class="gap-flag">No reasoning</span></div>
+        <div class="csc-new"><strong>Single authoritative recommendation</strong> <span class="gain-flag">Explained</span> with plain-language reasoning strings mapped directly to the user's answers.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Tiebreaker</div>
+        <div class="csc-old">Static hand-authored value per grip, including deliberate decimals (4.1 vs 4.0) to force merchandising preference <span class="gap-flag">Manual</span></div>
+        <div class="csc-new"><strong>Score threshold with conditional follow-on question</strong> <span class="gain-flag">Merit-based</span> when a genuine tie exists. No hidden merchandising priority.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Analytics</div>
+        <div class="csc-old">None. No instrumentation of quiz events or recommendation outcomes. <span class="gap-flag">None</span></div>
+        <div class="csc-new"><strong>Structured GA4 event</strong> <span class="gain-flag">Instrumented</span> per result, enabling quiz-answer-to-purchase linkage over time.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Catalog Maintenance</div>
+        <div class="csc-old">~18 grips × 9 hand-authored values in CMS content fragments. Updating requires author intervention. <span class="gap-flag">Author-dependent</span></div>
+        <div class="csc-new"><strong>Attribute database + config weights.</strong> <span class="gain-flag">Schema-driven</span> New grips enter the recommendation pool automatically when added to the database.</div>
+      </div>
+
+      <div class="csc-row">
+        <div class="csc-dim">Testing</div>
+        <div class="csc-old">"Unit test — not required" on every component. No regression protection on recommendations. <span class="gap-flag">None</span></div>
+        <div class="csc-new"><strong>Golden-set regression gate</strong> <span class="gain-flag">Protected</span> as a CI requirement. Recommendation changes require explicit sign-off.</div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <p>The current system is not broken — it runs, completes, and produces outputs. The gaps above are structural, not accidental: they are the natural consequence of building a quiz recommender without a formal attribute database, without differential weighting, and without explanation architecture. Each one has a clear, targeted fix in the redesign. The brief you've read describes exactly that fix.</p>
+    </div>
+
+  </section>
+</main>
+</div>
 <footer class="closing">
   <div class="closing-inner">
     <h2>What This Means for the Grip Finder</h2>
