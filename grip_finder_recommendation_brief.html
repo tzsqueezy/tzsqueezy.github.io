@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Recommendation Systems Work — Golf Pride Grip Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest:       #182B1E;
+      --forest-mid:   #2A4333;
+      --forest-light: #3D5C47;
+      --cream:        #F5F1EA;
+      --cream-warm:   #EDE8DF;
+      --cream-deep:   #E3DDD3;
+      --gold:         #B8933A;
+      --gold-light:   #D4AE5A;
+      --text:         #1A1A18;
+      --text-mid:     #4A5249;
+      --text-light:   #7A8479;
+      --border:       #CEC8BE;
+      --border-light: #E3DDD3;
+      --white:        #FDFCFA;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--cream);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--forest);
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-brand {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 11.5px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: rgba(255,255,255,0.9); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--forest);
+      padding: 100px 48px 88px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, rgba(184,147,58,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184,147,58,0.4), transparent);
+    }
+
+    .hero-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 32px;
+    }
+
+    .hero-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(42px, 6vw, 68px);
+      font-weight: 300;
+      line-height: 1.12;
+      color: #FFFFFF;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.58);
+      max-width: 600px;
+      line-height: 1.65;
+      margin-bottom: 52px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hero-meta-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .hero-meta-value {
+      font-size: 13px;
+      color: rgba(255,255,255,0.65);
+    }
+
+    /* ── DOCUMENT STRUCTURE ── */
+    .document {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    section:last-child { border-bottom: none; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .section-num {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      min-width: 24px;
+      padding-top: 8px;
+    }
+
+    h2 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(26px, 3.5vw, 36px);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--forest);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--forest);
+      line-height: 1.35;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-mid);
+      margin-bottom: 20px;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    strong { font-weight: 600; color: var(--text); }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--forest);
+      border-radius: 4px;
+      padding: 24px 28px;
+      margin: 32px 0;
+    }
+
+    .callout p { margin-bottom: 0; font-size: 15.5px; }
+
+    .callout-stat {
+      background: var(--forest);
+      border-radius: 6px;
+      padding: 28px 32px;
+      margin: 32px 0;
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-number {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--gold-light);
+      line-height: 1;
+    }
+
+    .stat-desc {
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.5);
+      max-width: 160px;
+      line-height: 1.5;
+    }
+
+    .stat-divider {
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+      align-self: stretch;
+    }
+
+    /* ── WORKING BACKWARDS DIAGRAM ── */
+    .backwards-chain {
+      margin: 40px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .chain-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 10px;
+      padding-left: 2px;
+    }
+
+    .chain-label.right-align { text-align: right; padding-right: 2px; }
+
+    .chain-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .chain-node {
+      flex: 1;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+      text-align: center;
+    }
+
+    .chain-node.active {
+      background: var(--forest);
+      border-color: var(--forest);
+    }
+
+    .chain-node-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+
+    .chain-node.active .chain-node-title {
+      color: var(--gold-light);
+    }
+
+    .chain-node-desc {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.4;
+    }
+
+    .chain-node.active .chain-node-desc {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .chain-arrow {
+      flex: 0 0 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 18px;
+    }
+
+    .chain-sub-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      margin-top: 8px;
+    }
+
+    .chain-sub-node {
+      flex: 1;
+      text-align: center;
+      padding: 6px 8px;
+    }
+
+    .chain-sub-text {
+      font-size: 11.5px;
+      color: var(--text-light);
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    .chain-sub-gap { flex: 0 0 36px; }
+
+    /* ── THREE COMPONENTS ── */
+    .components-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin: 36px 0;
+    }
+
+    .component-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .component-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .component-card.card-db::before   { background: var(--forest); }
+    .component-card.card-algo::before { background: var(--gold); }
+    .component-card.card-qs::before   { background: var(--forest-light); }
+
+    .component-tag {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .card-db   .component-tag { color: var(--forest); }
+    .card-algo .component-tag { color: var(--gold); }
+    .card-qs   .component-tag { color: var(--forest-light); }
+
+    .component-card h3 {
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+
+    .component-card p {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-mid);
+      margin-bottom: 0;
+    }
+
+    .components-note {
+      background: var(--cream-warm);
+      border-radius: 6px;
+      padding: 18px 22px;
+      font-size: 14.5px;
+      color: var(--text-mid);
+      line-height: 1.65;
+    }
+
+    /* ── FOUR PROPERTIES ── */
+    .properties-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 36px 0;
+    }
+
+    .property-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 24px;
+    }
+
+    .property-number {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .property-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--forest);
+      margin-bottom: 8px;
+    }
+
+    .property-card p {
+      font-size: 13.5px;
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .properties-insight {
+      grid-column: 1 / -1;
+      background: var(--forest);
+      border-radius: 8px;
+      padding: 24px 28px;
+      color: rgba(255,255,255,0.7);
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .properties-insight strong { color: var(--gold-light); }
+
+    /* ── ALGORITHM CARDS ── */
+    .algo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 36px 0;
+    }
+
+    .algo-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .algo-card.featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .algo-card-header {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .algo-card.featured .algo-card-header {
+      border-bottom: none;
+      border-right: 1px solid var(--border-light);
+      padding: 28px 28px;
+    }
+
+    .algo-type {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+      padding: 3px 8px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+
+    .type-cbr  { background: #3D5C47; }
+    .type-cbf  { background: var(--forest); }
+    .type-cf   { background: #5C6B61; }
+    .type-hyb  { background: var(--gold); }
+
+    .algo-name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--forest);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .algo-analogy {
+      font-size: 13px;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    .algo-card-body {
+      padding: 20px 24px;
+    }
+
+    .algo-card.featured .algo-card-body {
+      padding: 28px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .algo-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-mid);
+      margin-bottom: 18px;
+    }
+
+    .algo-traits {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .algo-trait {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.45;
+    }
+
+    .trait-icon {
+      font-size: 12px;
+      margin-top: 1px;
+      flex-shrink: 0;
+      width: 16px;
+    }
+
+    .trait-pro { color: var(--forest-light); }
+    .trait-con { color: #A06040; }
+
+    .algo-featured-desc {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-mid);
+      margin-bottom: 16px;
+    }
+
+    .algo-featured-desc strong { color: var(--forest); }
+
+    .algo-roadmap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 16px;
+      background: var(--cream-warm);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-mid);
+      margin-top: 16px;
+    }
+
+    .roadmap-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    /* ── THREE LAYER ARCHITECTURE ── */
+    .layer-stack {
+      margin: 40px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .layer {
+      padding: 28px 32px;
+      position: relative;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .layer-1 {
+      background: var(--forest);
+      border-radius: 8px 8px 2px 2px;
+      border: 1px solid var(--forest);
+    }
+
+    .layer-2 {
+      background: var(--forest-mid);
+      border-radius: 2px;
+      border-left: 1px solid rgba(255,255,255,0.08);
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .layer-3 {
+      background: var(--forest-light);
+      border-radius: 2px 2px 8px 8px;
+      border: 1px solid var(--forest-light);
+    }
+
+    .layer-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+    }
+
+    .layer-content { }
+
+    .layer-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .layer-subtitle {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .layer-desc {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.6;
+    }
+
+    .layer-tag {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .layer-connector {
+      height: 10px;
+      background: linear-gradient(to bottom, var(--forest-mid), var(--forest-light));
+      width: calc(100% - 64px);
+      margin: 0 32px;
+      opacity: 0.5;
+    }
+
+    /* ── DATABASE PRINCIPLES ── */
+    .principles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 36px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .principle-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .principle-item:last-child { border-bottom: none; }
+
+    .principle-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1.2;
+      min-width: 24px;
+      flex-shrink: 0;
+    }
+
+    .principle-body h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: 5px;
+    }
+
+    .principle-body p {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-mid);
+      margin-bottom: 0;
+    }
+
+    /* ── FRAGILITY GRID ── */
+    .fragility-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 36px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .fragility-item {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--white);
+    }
+
+    .fragility-item:last-child { border-bottom: none; }
+
+    .fragility-risk {
+      padding: 22px 22px;
+      background: #FDFAF6;
+      border-right: 1px solid var(--border-light);
+    }
+
+    .risk-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 5px;
+    }
+
+    .risk-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .fragility-mitigation {
+      padding: 22px 22px;
+    }
+
+    .mit-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--forest-light);
+      margin-bottom: 5px;
+    }
+
+    .mit-text {
+      font-size: 14px;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+
+    /* ── FINAL PRINCIPLES ── */
+    .final-principles {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin: 36px 0;
+    }
+
+    .fp-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px 20px;
+    }
+
+    .fp-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--cream-deep);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .fp-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: 7px;
+      line-height: 1.35;
+    }
+
+    .fp-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    /* ── CLOSING ── */
+    .closing {
+      background: var(--forest);
+      padding: 72px 48px;
+      margin-top: 0;
+    }
+
+    .closing-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .closing h2 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 300;
+      color: #FFFFFF;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .closing p {
+      color: rgba(255,255,255,0.55);
+      font-size: 15.5px;
+      line-height: 1.75;
+      max-width: 620px;
+      margin-bottom: 16px;
+    }
+
+    .next-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 36px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .next-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .next-step-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--gold);
+      min-width: 20px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .next-step-text {
+      font-size: 14.5px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.55;
+    }
+
+    .next-step-text strong {
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+    }
+
+    /* ── UTILITIES ── */
+    .spacer-sm { height: 20px; }
+    .spacer-md { height: 36px; }
+
+    @media (max-width: 720px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 64px 24px 56px; }
+      .document { padding: 0 24px; }
+      .components-grid { grid-template-columns: 1fr; }
+      .properties-grid { grid-template-columns: 1fr; }
+      .algo-grid { grid-template-columns: 1fr; }
+      .algo-card.featured { grid-template-columns: 1fr; }
+      .algo-card.featured .algo-card-header { border-right: none; border-bottom: 1px solid var(--border-light); }
+      .final-principles { grid-template-columns: 1fr; }
+      .fragility-item { grid-template-columns: 1fr; }
+      .fragility-risk { border-right: none; border-bottom: 1px solid var(--border-light); }
+      .closing { padding: 56px 24px; }
+      .callout-stat { flex-direction: column; gap: 20px; }
+      .stat-divider { display: none; }
+      .hero-meta { flex-wrap: wrap; gap: 20px; }
+      .layer { grid-template-columns: 1fr; }
+      .layer-badge { writing-mode: horizontal-tb; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <span class="nav-brand">Golf Pride · Grip Finder Initiative</span>
+  <ul class="nav-links">
+    <li><a href="#problem">The Problem</a></li>
+    <li><a href="#backwards">Working Backwards</a></li>
+    <li><a href="#components">Components</a></li>
+    <li><a href="#algorithms">Algorithms</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#database">Database</a></li>
+    <li><a href="#fragility">Fragility</a></li>
+    <li><a href="#principles">Principles</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">System Architecture Brief</div>
+    <h1>How <em>Recommendation</em><br>Systems Work</h1>
+    <p class="hero-sub">The logic, architecture, and design fundamentals behind building a grip recommender that earns trust and drives purchase decisions.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Project</span>
+        <span class="hero-meta-value">Grip Finder Redesign</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Scope</span>
+        <span class="hero-meta-value">Swing Grips</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Purpose</span>
+        <span class="hero-meta-value">Architecture Foundations</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="document">
+
+  <!-- SECTION 1: THE PROBLEM -->
+  <section id="problem">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>The Gap Between Completion and Conversion</h2>
+    </div>
+
+    <p>Most product recommendation quizzes are built the wrong way. Teams write questions based on intuition about what seems useful to ask, assemble them into a quiz, and map answers to products through informal logic. The quiz gets built, it gets shipped, and on the surface it looks like it works — users complete it.</p>
+
+    <p>The problem shows up in what users <em>do next</em>. Completion rates look healthy, but result-page click-through — the metric that connects a recommendation to an actual purchase — dramatically underperforms. The quiz produces an output users don't trust or act on.</p>
+
+    <div class="callout-stat">
+      <div class="stat-item">
+        <span class="stat-number">~100%</span>
+        <span class="stat-desc">Quiz completion rate once started</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">10.8%</span>
+        <span class="stat-desc">Result page click-through rate</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">40–60%</span>
+        <span class="stat-desc">Industry benchmark for product recommenders</span>
+      </div>
+    </div>
+
+    <p>This gap exists because the quiz was designed from the question side rather than from the output side. Questions were written to feel comprehensive, not to systematically match users to grip attributes. The result is a quiz that completes easily but recommends without real grounding — and users sense that, even if they can't articulate it.</p>
+
+    <div class="callout">
+      <p>A well-designed recommender doesn't just find the right answer — it produces a recommendation the user trusts enough to act on. These are different problems, and solving both requires building from the right starting point.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2: WORKING BACKWARDS -->
+  <section id="backwards">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Working Backwards — The Right Foundation</h2>
+    </div>
+
+    <p>The most important decision in recommender design is where you start. The conventional approach starts with questions. The right approach starts with the desired output — a recommendation the user trusts and acts on — and works backwards to determine what the system needs, and what questions should ask.</p>
+
+    <p>This isn't a subtle distinction. It determines whether the quiz produces questions grounded in product logic or questions invented from instinct.</p>
+
+    <div class="backwards-chain">
+      <div class="chain-label">Design logic — start here and work left →</div>
+      <div class="chain-row">
+        <div class="chain-node active">
+          <div class="chain-node-title">Recommendation</div>
+          <div class="chain-node-desc">The grip that best matches this golfer's needs</div>
+        </div>
+        <div class="chain-arrow">←</div>
+        <div class="chain-node">
+          <div class="chain-node-title">Attribute Match</div>
+          <div class="chain-node-desc">Grips scored against the user's attribute preferences</div>
+        </div>
+        <div class="chain-arrow">←</div>
+        <div class="chain-node">
+          <div class="chain-node-title">Answer Translation</div>
+          <div class="chain-node-desc">Quiz answers mapped to grip attribute dimensions</div>
+        </div>
+        <div class="chain-arrow">←</div>
+        <div class="chain-node">
+          <div class="chain-node-title">Questions</div>
+          <div class="chain-node-desc">What we ask the golfer to surface their preferences</div>
+        </div>
+      </div>
+      <div class="chain-sub-row">
+        <div class="chain-sub-node"></div>
+        <div class="chain-sub-gap"></div>
+        <div class="chain-sub-node"><span class="chain-sub-text">The scoring system and database</span></div>
+        <div class="chain-sub-gap"></div>
+        <div class="chain-sub-node"><span class="chain-sub-text">The translation layer</span></div>
+        <div class="chain-sub-gap"></div>
+        <div class="chain-sub-node"><span class="chain-sub-text">The user experience</span></div>
+      </div>
+    </div>
+
+    <p>In practice, this means the question set is designed last, not first. Before writing a single question, you need to know: which grip attributes actually differentiate the catalog, how much filtering power each attribute has, and which combinations of attributes uniquely identify the right grip. The questions are then derived from that analysis — not imagined from scratch.</p>
+
+    <p>The payoff is significant. Every question earns its place by doing measurable filtering work. Questions that don't change the recommendation get cut. Questions that surface the most important dimensions get the most design attention. The quiz becomes shorter and sharper, and the recommendation becomes something the system can explain and defend.</p>
+  </section>
+
+  <!-- SECTION 3: THREE COMPONENTS -->
+  <section id="components">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Three Interdependent Components</h2>
+    </div>
+
+    <p>A recommendation system is not just a quiz. It is three distinct components, each with its own responsibilities — and each dependent on the quality of the others.</p>
+
+    <div class="components-grid">
+      <div class="component-card card-db">
+        <div class="component-tag">Foundation</div>
+        <h3>The Attribute Database</h3>
+        <p>The structured product catalog. Every grip represented as a consistent set of machine-readable attributes — feel, moisture performance, material type, grip pressure characteristics, and more. This is the source of truth the algorithm runs on.</p>
+      </div>
+      <div class="component-card card-algo">
+        <div class="component-tag">Engine</div>
+        <h3>The Algorithm</h3>
+        <p>The logic that translates quiz answers into grip recommendations. It filters, scores, and ranks the catalog against the user's expressed preferences. The quality of the output is bounded by the quality of the database and the question inputs it receives.</p>
+      </div>
+      <div class="component-card card-qs">
+        <div class="component-tag">Interface</div>
+        <h3>The Question Set</h3>
+        <p>The user-facing surface of the whole system. Each question must map cleanly to one or more attributes in the database. The quality and framing of questions directly determines the accuracy of what the algorithm receives to work with.</p>
+      </div>
+    </div>
+
+    <div class="components-note">
+      These components are tightly coupled. The database shapes which questions are worth asking — if an attribute doesn't meaningfully differentiate the catalog, no question should be built around it. The algorithm determines what data the questions need to collect. And the question set is only as useful as the attributes it surfaces. Weakness in any one component limits the whole system.
+    </div>
+  </section>
+
+  <!-- SECTION 4: WHAT MAKES A GREAT RECOMMENDATION -->
+  <section id="great">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>What a Great Recommendation Actually Is</h2>
+    </div>
+
+    <p>Accuracy — recommending the technically correct grip — is necessary but not sufficient. A recommendation that's right but not trusted won't convert. A recommendation that's trusted but not explainable creates doubt. Four properties together produce a recommendation users act on.</p>
+
+    <div class="properties-grid">
+      <div class="property-card">
+        <div class="property-number">01</div>
+        <h3>Accurate</h3>
+        <p>It genuinely matches the golfer's needs. The algorithm reaches the right answer based on their actual preferences, conditions, and physical requirements.</p>
+      </div>
+      <div class="property-card">
+        <div class="property-number">02</div>
+        <h3>Trusted</h3>
+        <p>The golfer believes the recommendation was made for them specifically. It doesn't feel like a generic default or a product the site wants to move — it feels like expert guidance.</p>
+      </div>
+      <div class="property-card">
+        <div class="property-number">03</div>
+        <h3>Explainable</h3>
+        <p>The golfer understands why they received this recommendation. It connects their own answers back to specific product qualities in plain language — not in algorithm scores or abstract percentages.</p>
+      </div>
+      <div class="property-card">
+        <div class="property-number">04</div>
+        <h3>Actionable</h3>
+        <p>The recommendation creates a clear, confident path to a purchase decision. There's one primary action and the user knows exactly what it is.</p>
+      </div>
+      <div class="properties-insight">
+        Most recommenders focus almost entirely on accuracy and neglect the other three. <strong>Trust, explainability, and actionability are what separate a search result from a trusted advisor</strong> — and they're why result-page CTR matters more than completion rate as the measure of a recommender's success.
+      </div>
+    </div>
+
+    <p>Recommendation explanations — mapping the output directly back to the user's own answers in natural language — are the single most effective lever for building trust and improving click-through. Research in recommender systems literature consistently identifies "why" explanations as the most impactful explanation type for both trust and conversion, more so than feature lists, comparison scores, or aggregate ratings.</p>
+  </section>
+
+  <!-- SECTION 5: ALGORITHM FUNDAMENTALS -->
+  <section id="algorithms">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Algorithm Architecture Fundamentals</h2>
+    </div>
+
+    <p>There are three established paradigms for recommendation algorithms, each with distinct trade-offs. Understanding them provides a shared vocabulary for evaluating design decisions and making informed choices as the system evolves.</p>
+
+    <div class="algo-grid">
+
+      <!-- CBR -->
+      <div class="algo-card">
+        <div class="algo-card-header">
+          <span class="algo-type type-cbr">CBR</span>
+          <div class="algo-name">Constraint-Based<br>Recommenders</div>
+          <div class="algo-analogy">The rule book</div>
+        </div>
+        <div class="algo-card-body">
+          <p class="algo-desc">Explicit IF-THEN logic: "If the user wants soft feel AND plays in dry conditions, show these grips." Every recommendation is the result of a decision tree walking through explicit rules. Most quiz-based recommenders today are effectively CBRs in disguise.</p>
+          <div class="algo-traits">
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Fully transparent — every recommendation is traceable</div>
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Easy to explain and audit with stakeholders</div>
+            <div class="algo-trait"><span class="trait-icon trait-con">✗</span> Brittle — aggressive rules can return zero results</div>
+            <div class="algo-trait"><span class="trait-icon trait-con">✗</span> Can't handle partial matches or "close enough"</div>
+            <div class="algo-trait"><span class="trait-icon trait-con">✗</span> New products require manual rule updates</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CBF -->
+      <div class="algo-card">
+        <div class="algo-card-header">
+          <span class="algo-type type-cbf">CBF</span>
+          <div class="algo-name">Content-Based<br>Filtering</div>
+          <div class="algo-analogy">The weighted scorecard</div>
+        </div>
+        <div class="algo-card-body">
+          <p class="algo-desc">Every grip is represented as a vector of attribute values. Every user preference is a weighting across those same attributes. The system recommends grips by measuring how closely each grip's profile matches the user's preference profile — giving each grip a score.</p>
+          <div class="algo-traits">
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Handles partial matches — near-perfect still surfaces</div>
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Always produces a ranked output — no empty states</div>
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> New products enter automatically via the database</div>
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Scores can power natural-language explanations</div>
+            <div class="algo-trait"><span class="trait-icon trait-con">✗</span> Quality is bounded by attribute data quality</div>
+            <div class="algo-trait"><span class="trait-icon trait-con">✗</span> Initial weights require expert calibration</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CF -->
+      <div class="algo-card">
+        <div class="algo-card-header">
+          <span class="algo-type type-cf">CF</span>
+          <div class="algo-name">Collaborative<br>Filtering</div>
+          <div class="algo-analogy">The collective wisdom</div>
+        </div>
+        <div class="algo-card-body">
+          <p class="algo-desc">Recommends based on what real users with similar behavior ultimately chose — not on product attributes. "Golfers who answered your questions bought this grip 73% of the time." The engine behind Netflix, Spotify, and Amazon's recommendation systems.</p>
+          <div class="algo-traits">
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Catches patterns no attribute model can predict</div>
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Improves automatically as purchase data grows</div>
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> The long-term path to genuine personalization</div>
+            <div class="algo-trait"><span class="trait-icon trait-con">✗</span> Cold start problem: requires historical data to function</div>
+            <div class="algo-trait"><span class="trait-icon trait-con">✗</span> Not available from day one — must be built toward</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hybrid -->
+      <div class="algo-card">
+        <div class="algo-card-header">
+          <span class="algo-type type-hyb">Hybrid</span>
+          <div class="algo-name">Hybrid<br>Recommenders</div>
+          <div class="algo-analogy">The mature approach</div>
+        </div>
+        <div class="algo-card-body">
+          <p class="algo-desc">Combines content-based filtering and collaborative filtering. Start with expert-calibrated attribute scoring (CBF); supplement with observed purchase patterns (CF) as data accumulates. The architecture behind every serious product recommender at scale.</p>
+          <div class="algo-traits">
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Grounded in product logic from day one</div>
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> Becomes data-driven over time without a rebuild</div>
+            <div class="algo-trait"><span class="trait-icon trait-pro">✓</span> The right architecture for both now and later</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <p><strong>A note on where the Grip Finder sits today:</strong> The current quiz is a CBR — rule-based logic with limited scoring sophistication. The redesign moves to content-based filtering (CBF) with expert-calibrated weights as the core engine, with a clear instrumentation path toward collaborative filtering as quiz-answer-to-purchase data becomes linkable through analytics.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 6: THREE LAYER ARCHITECTURE -->
+  <section id="architecture">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>A Three-Layer Architecture</h2>
+    </div>
+
+    <p>The right architecture for the Grip Finder is not a single flat decision tree, and not a pure scoring model. It is three distinct layers, each doing a different kind of work. Together they produce recommendations that are accurate, stable, and explainable — and they make the system robust to edge cases, catalog changes, and future growth.</p>
+
+    <div class="layer-stack">
+      <div class="layer layer-3">
+        <div class="layer-badge">Layer 3</div>
+        <div class="layer-content">
+          <div class="layer-title">Feature Modifier</div>
+          <div class="layer-subtitle">Variant selection applied after scoring</div>
+          <div class="layer-desc">Certain product features — like alignment technology — are applied as variant selectors, not primary filters. After scoring identifies the best-fit grip family, the modifier surfaces the right variant (standard, align, or align max) based on a focused follow-on question. This prevents feature add-ons from competing against core preference dimensions in the scoring layer.</div>
+        </div>
+        <div class="layer-tag">Post-scoring modifier</div>
+      </div>
+
+      <div class="layer layer-2">
+        <div class="layer-badge">Layer 2</div>
+        <div class="layer-content">
+          <div class="layer-title">Weighted Attribute Scoring</div>
+          <div class="layer-subtitle">Content-based filtering (CBF) — the recommendation engine</div>
+          <div class="layer-desc">Every grip in the catalog is scored against the user's expressed preferences. Each quiz answer maps to one or more attribute dimensions. Grips rank by total weighted score. The weights themselves live in a configuration file — adjusting how much any attribute counts is a tuning operation, not a code change. The algorithm always produces a ranked result; there are no empty states.</div>
+        </div>
+        <div class="layer-tag">Core scoring engine</div>
+      </div>
+
+      <div class="layer layer-1">
+        <div class="layer-badge">Layer 1</div>
+        <div class="layer-content">
+          <div class="layer-title">Hard Filters</div>
+          <div class="layer-subtitle">Non-negotiable elimination criteria — applied first</div>
+          <div class="layer-desc">A grip that doesn't fit the golfer's hand is never recommended, regardless of how well it scores on every other dimension. Products with incomplete or unverified attribute data are excluded automatically. Hard filters are strictly limited to true dealbreakers — every additional hard filter creates the risk of eliminating all options for an edge-case user profile.</div>
+        </div>
+        <div class="layer-tag">Dealbreakers only</div>
+      </div>
+    </div>
+
+    <p>The architecture mirrors how a skilled fitter actually operates: they first confirm fit (Layer 1), then score the golfer's preferences against the catalog (Layer 2), then surface the right variant based on specific technical needs (Layer 3). The quiz is a digital translation of that same process.</p>
+  </section>
+
+  <!-- SECTION 7: THE DATABASE -->
+  <section id="database">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>The Attribute Database — The Engine of the System</h2>
+    </div>
+
+    <p>The algorithm is only as good as the data it runs on. A scoring engine built on inconsistent or incomplete attribute data produces inconsistent, inexplicable recommendations — no matter how sophisticated the logic. The attribute database is not a supporting component; it is the foundation everything else depends on.</p>
+
+    <p>A well-structured attribute database enables four things the system cannot have without it: new products entering the recommendation pool automatically when added; consistent, auditable recommendations tied to a traceable data source; independent updates to product data without touching the algorithm logic; and score-based explanation copy tied directly to product attributes.</p>
+
+    <div class="principles-list">
+      <div class="principle-item">
+        <div class="principle-num">1</div>
+        <div class="principle-body">
+          <h3>Schema-driven, not product-ID-driven</h3>
+          <p>The algorithm runs against attribute values, not against hardcoded product identifiers. A new grip added to the database with complete attributes enters the recommendation pool automatically — no algorithm changes required. This is the single most important long-term flexibility decision.</p>
+        </div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-num">2</div>
+        <div class="principle-body">
+          <h3>Consistent scales and vocabulary</h3>
+          <p>Every attribute uses the same scale, the same vocabulary, and the same logic across every product in the catalog. A "feel: 3" on one grip must mean exactly the same thing as "feel: 3" on another. Inconsistencies in attribute definitions produce inconsistencies in recommendations — and they're invisible until a recommendation is wrong.</p>
+        </div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-num">3</div>
+        <div class="principle-body">
+          <h3>Completeness as a gate</h3>
+          <p>Products with missing or unverified attributes are flagged and excluded from the recommendation pool automatically — by the algorithm, not by manual intervention. Recommending a product based on incomplete data is worse than not recommending it at all: it damages user trust when the recommendation is wrong for a reason no one can explain.</p>
+        </div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-num">4</div>
+        <div class="principle-body">
+          <h3>Separation of concerns</h3>
+          <p>The product attribute data, the scoring weights, and the recommendation logic are three separate concerns — each managed independently. Updating a grip's attributes is a product team responsibility. Adjusting how much an attribute counts in scoring is a calibration decision. Changing recommendation logic is an engineering decision. These should never be entangled.</p>
+        </div>
+      </div>
+    </div>
+
+    <p>In practice this means the product team owns the database, and the integrity of that database directly determines the quality of every recommendation. Building good data governance around the attribute catalog — who updates it, how updates are validated, and how new products are approved for the recommendation pool — is as important as building the algorithm itself.</p>
+  </section>
+
+  <!-- SECTION 8: FRAGILITY -->
+  <section id="fragility">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Planning for Fragility</h2>
+    </div>
+
+    <p>Every recommendation system has failure modes. Identifying them before building is what separates an architecture designed to last from one that requires constant firefighting. The five failure modes below are the most relevant to the Grip Finder, with the mitigations built into the architecture we're recommending.</p>
+
+    <div class="fragility-grid">
+      <div class="fragility-item">
+        <div class="fragility-risk">
+          <div class="risk-label">Failure Mode</div>
+          <div class="risk-name">Attribute Drift</div>
+        </div>
+        <div class="fragility-mitigation">
+          <div class="mit-label">Mitigation</div>
+          <div class="mit-text">Product attributes change — new materials, reformulations, catalog updates — but the database isn't updated. Grips get recommended for reasons that no longer apply. Addressed by validation flags on all products and clear product team ownership of the database. Unverified attributes trigger automatic exclusion from recommendations.</div>
+        </div>
+      </div>
+      <div class="fragility-item">
+        <div class="fragility-risk">
+          <div class="risk-label">Failure Mode</div>
+          <div class="risk-name">Empty Result States</div>
+        </div>
+        <div class="fragility-mitigation">
+          <div class="mit-label">Mitigation</div>
+          <div class="mit-text">Too many hard filters eliminate all options for an edge-case user profile, returning zero recommendations. Addressed by limiting hard filters strictly to dealbreakers (size availability, validated data) and using weighted scoring for all preference dimensions. Scoring always produces a ranked result.</div>
+        </div>
+      </div>
+      <div class="fragility-item">
+        <div class="fragility-risk">
+          <div class="risk-label">Failure Mode</div>
+          <div class="risk-name">Weight Miscalibration</div>
+        </div>
+        <div class="fragility-mitigation">
+          <div class="mit-label">Mitigation</div>
+          <div class="mit-text">Scoring weights are initially expert-assigned and may need adjustment as real behavior data accumulates. Addressed by storing all weights in a configuration file separate from algorithm logic — adjusting weights is a tuning operation, not a code change. A/B testing framework provides the calibration path over time.</div>
+        </div>
+      </div>
+      <div class="fragility-item">
+        <div class="fragility-risk">
+          <div class="risk-label">Failure Mode</div>
+          <div class="risk-name">Catalog Sparsity at the Edges</div>
+        </div>
+        <div class="fragility-mitigation">
+          <div class="mit-label">Mitigation</div>
+          <div class="mit-text">Some user profiles (unusual size requirements combined with extreme feel preferences) have very few qualifying products. Addressed by graceful degradation — the system surfaces the best available option transparently, rather than returning a weak match as if it's optimal. Honesty about limited options preserves trust.</div>
+        </div>
+      </div>
+      <div class="fragility-item">
+        <div class="fragility-risk">
+          <div class="risk-label">Failure Mode</div>
+          <div class="risk-name">Self-Report Error in Questions</div>
+        </div>
+        <div class="fragility-mitigation">
+          <div class="mit-label">Mitigation</div>
+          <div class="mit-text">Users answer questions inaccurately, especially on dimensions requiring self-diagnosis (e.g., assessing their own grip pressure). Addressed in question design through behavioral framing — asking about observable events ("have you been told to loosen your grip?") rather than internal states ("how tightly do you grip?"). Validated through fitting expert input.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: PRINCIPLES -->
+  <section id="principles">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2>Guiding Architecture Principles</h2>
+    </div>
+
+    <p>Six principles govern every design decision across the database, the algorithm, and the question set. They aren't abstract ideals — each one addresses a specific way recommender systems fail in practice.</p>
+
+    <div class="final-principles">
+      <div class="fp-card">
+        <div class="fp-num">01</div>
+        <div class="fp-title">Start from the output, not the input</div>
+        <p class="fp-desc">Questions are derived from the attribute database. Every question must map to a filterable attribute. If a question doesn't change which grip gets recommended, it doesn't belong in the quiz.</p>
+      </div>
+      <div class="fp-card">
+        <div class="fp-num">02</div>
+        <div class="fp-title">The database is the source of truth</div>
+        <p class="fp-desc">The algorithm is in service of the data. The quality ceiling for every recommendation is set by the quality of the attribute database — not by the sophistication of the algorithm.</p>
+      </div>
+      <div class="fp-card">
+        <div class="fp-num">03</div>
+        <div class="fp-title">Hard-filter only on dealbreakers</div>
+        <p class="fp-desc">True dealbreakers (size, validated data) are eliminated. Everything else is scored and ranked. Preference dimensions are never hard filters — they are weights.</p>
+      </div>
+      <div class="fp-card">
+        <div class="fp-num">04</div>
+        <div class="fp-title">Treat weights as configuration</div>
+        <p class="fp-desc">Changing how much an attribute counts in scoring is a tuning decision, not an engineering change. Weights live in config, not in code — making calibration straightforward as real behavior data accumulates.</p>
+      </div>
+      <div class="fp-card">
+        <div class="fp-num">05</div>
+        <div class="fp-title">Build for catalog growth</div>
+        <p class="fp-desc">New products should enter the recommendation pool by adding a row to the database, not by writing new rules. The system is designed for a growing catalog from the start.</p>
+      </div>
+      <div class="fp-card">
+        <div class="fp-num">06</div>
+        <div class="fp-title">Explainability is a first-class requirement</div>
+        <p class="fp-desc">Recommendations that explain themselves in the user's own language outperform those that don't — in trust, in click-through, and in conversion. Explanation copy is designed in from day one, not added afterward.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- CLOSING -->
+<footer class="closing">
+  <div class="closing-inner">
+    <h2>What This Means for the Grip Finder</h2>
+    <p>This architecture is the foundation everything else in the Grip Finder redesign is built on. The attribute database is already structured and under review. The algorithm architecture is defined. The three-layer system is the target.</p>
+    <p>What follows from this foundation is the question set — the user-facing interface of the whole system. Each question will be derived from the attribute database, sequenced by filtering power, and designed to elicit the specific information the algorithm needs. That work is the next phase.</p>
+    <div class="next-steps">
+      <div class="next-step">
+        <span class="next-step-num">→</span>
+        <span class="next-step-text"><strong>Attribute Database:</strong> Catalog underway. Attributes being validated across all confirmed swing grips. Products with incomplete data flagged for review.</span>
+      </div>
+      <div class="next-step">
+        <span class="next-step-num">→</span>
+        <span class="next-step-text"><strong>Algorithm Architecture:</strong> Three-layer design defined. Hard filters, weighted CBF scoring, and feature modifier system scoped and ready for implementation spec.</span>
+      </div>
+      <div class="next-step">
+        <span class="next-step-num">→</span>
+        <span class="next-step-text"><strong>Question Set:</strong> In active development. Questions derived from attribute analysis. Each question mapped to specific filtering dimensions with format and framing explored against the attribute database.</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
