@@ -934,6 +934,136 @@
       font-weight: 500;
     }
 
+    /* ── EXECUTIVE SUMMARY ── */
+    .exec-summary {
+      background: var(--white);
+      border-bottom: 1px solid var(--border-light);
+      padding: 56px 48px 60px;
+    }
+
+    .es-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .es-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 12px;
+    }
+
+    .es-eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--forest);
+    }
+
+    .es-intro {
+      font-size: 15.5px;
+      color: var(--text-mid);
+      line-height: 1.75;
+      max-width: 680px;
+      margin-bottom: 36px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .es-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .es-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+    }
+
+    .es-card-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 7px;
+    }
+
+    .es-card-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      min-width: 16px;
+      flex-shrink: 0;
+    }
+
+    .es-card-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--forest);
+      line-height: 1.3;
+    }
+
+    .es-card-body {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.65;
+      margin-bottom: 10px;
+      padding-left: 26px;
+    }
+
+    .es-card-link {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      padding-left: 26px;
+      transition: color 0.15s;
+    }
+
+    .es-card-link:hover { color: var(--forest); }
+
+    /* ── HORIZONTAL SCROLL WRAPPER (mobile) ── */
+    .scroll-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 6px;
+      margin-bottom: -6px;
+    }
+
+    .scroll-wrap::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .scroll-wrap::-webkit-scrollbar-track {
+      background: var(--border-light);
+      border-radius: 2px;
+    }
+
+    .scroll-wrap::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .scroll-wrap .chain-row,
+    .scroll-wrap .chain-sub-row {
+      min-width: 600px;
+    }
+
+    .scroll-wrap .scoring-cols {
+      min-width: 480px;
+    }
+
     /* ── CURRENT STATE SECTION ── */
     .scoring-concept {
       background: var(--white);
@@ -1263,7 +1393,6 @@
     }
 
     @media (max-width: 720px) {
-      .scoring-cols { grid-template-columns: 1fr 20px 1fr 20px 1fr 20px auto; }
       .weakness-item { grid-template-columns: 1fr; }
       .weakness-label { border-left: 3px solid #C8903A; border-right: none; border-bottom: 1px solid var(--border-light); }
       .csc-header { grid-template-columns: 1fr; }
@@ -1273,8 +1402,6 @@
       .csc-header-cell.old-col, .csc-header-cell.new-col { border-left: none; border-top: 1px solid rgba(255,255,255,0.1); }
       .vb-header { flex-direction: column; align-items: flex-start; gap: 4px; }
     }
-
-    /* ── UTILITIES ── */
     .spacer-sm { height: 20px; }
     .spacer-md { height: 36px; }
 
@@ -1282,6 +1409,8 @@
       nav { padding: 0 20px; }
       .nav-links { display: none; }
       .hero { padding: 64px 24px 56px; }
+      .exec-summary { padding: 40px 24px 44px; }
+      .es-grid { grid-template-columns: 1fr; }
       .document { padding: 0 24px; }
       .components-grid { grid-template-columns: 1fr; }
       .properties-grid { grid-template-columns: 1fr; }
@@ -1306,6 +1435,7 @@
 <nav>
   <span class="nav-brand">Golf Pride · Grip Finder Initiative</span>
   <ul class="nav-links">
+    <li><a href="#summary">Summary</a></li>
     <li><a href="#problem">The Problem</a></li>
     <li><a href="#backwards">Working Backwards</a></li>
     <li><a href="#components">Components</a></li>
@@ -1340,6 +1470,89 @@
     </div>
   </div>
 </header>
+
+<!-- EXECUTIVE SUMMARY -->
+<div id="summary" class="exec-summary">
+  <div class="es-inner">
+    <div class="es-eyebrow">Executive Summary</div>
+    <p class="es-intro">This brief explains the architecture behind the redesigned Golf Pride Grip Finder — how a recommendation system should be built, why the current one falls short, and what our proposed approach fixes. Sections are referenced below for anyone who wants the full detail on any topic.</p>
+    <div class="es-grid">
+
+      <div class="es-card">
+        <div class="es-card-header">
+          <span class="es-card-num">01</span>
+          <span class="es-card-title">Start from the recommendation, not the questions</span>
+        </div>
+        <p class="es-card-body">Questions should be derived from what attributes actually differentiate the product catalog — not invented from intuition. If an answer doesn't change the recommendation, the question doesn't belong. This backwards-design logic is the foundation of the entire approach.</p>
+        <a class="es-card-link" href="#backwards">→ Working Backwards</a>
+      </div>
+
+      <div class="es-card">
+        <div class="es-card-header">
+          <span class="es-card-num">02</span>
+          <span class="es-card-title">Three components that must align</span>
+        </div>
+        <p class="es-card-body">The attribute database, the algorithm, and the question set are interdependent. The database shapes which questions are worth asking. The algorithm determines what data needs to be collected. Weakness in any one component caps the quality of the whole system.</p>
+        <a class="es-card-link" href="#components">→ Three Components</a>
+      </div>
+
+      <div class="es-card">
+        <div class="es-card-header">
+          <span class="es-card-num">03</span>
+          <span class="es-card-title">The right algorithm architecture</span>
+        </div>
+        <p class="es-card-body">Content-Based Filtering (CBF) powers recommendations today: grips are scored against the user's expressed preferences using weighted attributes. A Collaborative Filtering layer can be added as purchase data accumulates — without a rebuild. We start expert-driven and become data-driven over time.</p>
+        <a class="es-card-link" href="#algorithms">→ Algorithm Types</a>
+      </div>
+
+      <div class="es-card">
+        <div class="es-card-header">
+          <span class="es-card-num">04</span>
+          <span class="es-card-title">The database is the foundation</span>
+        </div>
+        <p class="es-card-body">The algorithm is only as good as the data it runs on. The attribute database must be schema-driven so new products enter automatically, consistently structured so attributes mean the same thing across all grips, and complete — products with missing data are excluded, not guessed at.</p>
+        <a class="es-card-link" href="#database">→ The Database</a>
+      </div>
+
+      <div class="es-card">
+        <div class="es-card-header">
+          <span class="es-card-num">05</span>
+          <span class="es-card-title">Failure modes identified and mitigated</span>
+        </div>
+        <p class="es-card-body">Five structural failure modes — attribute drift, empty result states, weight miscalibration, catalog sparsity, and self-report error in questions — have been named and addressed in the architecture before implementation begins. Planning for fragility is how the system stays reliable as the catalog and team change.</p>
+        <a class="es-card-link" href="#fragility">→ Fragility</a>
+      </div>
+
+      <div class="es-card">
+        <div class="es-card-header">
+          <span class="es-card-num">06</span>
+          <span class="es-card-title">Built to optimize and measure over time</span>
+        </div>
+        <p class="es-card-body">Scoring weights live in configuration — changing how much any attribute counts is a tuning decision, not an engineering change. A GA4 instrumentation layer links quiz answers to purchase outcomes from day one, creating the dataset for data-driven weight calibration and eventually collaborative filtering. Measurement is designed in from the start.</p>
+        <a class="es-card-link" href="#architecture">→ Architecture</a>
+      </div>
+
+      <div class="es-card">
+        <div class="es-card-header">
+          <span class="es-card-num">07</span>
+          <span class="es-card-title">Six guiding architecture principles</span>
+        </div>
+        <p class="es-card-body">Start from the output. Treat the database as source of truth. Hard-filter only on dealbreakers. Treat weights as configuration. Build for catalog growth. Design explainability in from day one. These six principles govern every design decision and ensure the system stays coherent as it evolves.</p>
+        <a class="es-card-link" href="#principles">→ Principles</a>
+      </div>
+
+      <div class="es-card">
+        <div class="es-card-header">
+          <span class="es-card-num">08</span>
+          <span class="es-card-title">What changes from the existing system</span>
+        </div>
+        <p class="es-card-body">The current quiz weights moisture, firmness, and texture equally — feel carries 3× more filtering power in the catalog but receives no preference. ALIGN and Plus4 variants share identical scorecards and are invisible to the algorithm. Three product dimensions (grip pressure, alignment, sweaty-hands path) are entirely unasked. The redesign closes each gap directly.</p>
+        <a class="es-card-link" href="#current-state">→ Old vs. New</a>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <main class="document">
 
@@ -1391,35 +1604,37 @@
 
     <div class="backwards-chain">
       <div class="chain-label">Design logic — start here and work left →</div>
-      <div class="chain-row">
-        <div class="chain-node active">
-          <div class="chain-node-title">Recommendation</div>
-          <div class="chain-node-desc">The grip that best matches this golfer's needs</div>
+      <div class="scroll-wrap">
+        <div class="chain-row">
+          <div class="chain-node active">
+            <div class="chain-node-title">Recommendation</div>
+            <div class="chain-node-desc">The grip that best matches this golfer's needs</div>
+          </div>
+          <div class="chain-arrow">←</div>
+          <div class="chain-node">
+            <div class="chain-node-title">Attribute Match</div>
+            <div class="chain-node-desc">Grips scored against the user's attribute preferences</div>
+          </div>
+          <div class="chain-arrow">←</div>
+          <div class="chain-node">
+            <div class="chain-node-title">Answer Translation</div>
+            <div class="chain-node-desc">Quiz answers mapped to grip attribute dimensions</div>
+          </div>
+          <div class="chain-arrow">←</div>
+          <div class="chain-node">
+            <div class="chain-node-title">Questions</div>
+            <div class="chain-node-desc">What we ask the golfer to surface their preferences</div>
+          </div>
         </div>
-        <div class="chain-arrow">←</div>
-        <div class="chain-node">
-          <div class="chain-node-title">Attribute Match</div>
-          <div class="chain-node-desc">Grips scored against the user's attribute preferences</div>
+        <div class="chain-sub-row">
+          <div class="chain-sub-node"></div>
+          <div class="chain-sub-gap"></div>
+          <div class="chain-sub-node"><span class="chain-sub-text">The scoring system and database</span></div>
+          <div class="chain-sub-gap"></div>
+          <div class="chain-sub-node"><span class="chain-sub-text">The translation layer</span></div>
+          <div class="chain-sub-gap"></div>
+          <div class="chain-sub-node"><span class="chain-sub-text">The user experience</span></div>
         </div>
-        <div class="chain-arrow">←</div>
-        <div class="chain-node">
-          <div class="chain-node-title">Answer Translation</div>
-          <div class="chain-node-desc">Quiz answers mapped to grip attribute dimensions</div>
-        </div>
-        <div class="chain-arrow">←</div>
-        <div class="chain-node">
-          <div class="chain-node-title">Questions</div>
-          <div class="chain-node-desc">What we ask the golfer to surface their preferences</div>
-        </div>
-      </div>
-      <div class="chain-sub-row">
-        <div class="chain-sub-node"></div>
-        <div class="chain-sub-gap"></div>
-        <div class="chain-sub-node"><span class="chain-sub-text">The scoring system and database</span></div>
-        <div class="chain-sub-gap"></div>
-        <div class="chain-sub-node"><span class="chain-sub-text">The translation layer</span></div>
-        <div class="chain-sub-gap"></div>
-        <div class="chain-sub-node"><span class="chain-sub-text">The user experience</span></div>
       </div>
     </div>
 
@@ -1807,25 +2022,27 @@
 
     <div class="scoring-concept">
       <div class="scoring-concept-label">Current Scoring Formula</div>
-      <div class="scoring-cols">
-        <div class="scoring-col">
-          <div class="sc-label">Moisture</div>
-          <div class="sc-max">max 10 pts</div>
-        </div>
-        <div class="scoring-op">+</div>
-        <div class="scoring-col">
-          <div class="sc-label">Firmness</div>
-          <div class="sc-max">max 10 pts</div>
-        </div>
-        <div class="scoring-op">+</div>
-        <div class="scoring-col">
-          <div class="sc-label">Texture</div>
-          <div class="sc-max">max 10 pts</div>
-        </div>
-        <div class="scoring-op">=</div>
-        <div class="scoring-total">
-          <div class="st-label">Total</div>
-          <div class="st-value">max 30 pts</div>
+      <div class="scroll-wrap">
+        <div class="scoring-cols">
+          <div class="scoring-col">
+            <div class="sc-label">Moisture</div>
+            <div class="sc-max">max 10 pts</div>
+          </div>
+          <div class="scoring-op">+</div>
+          <div class="scoring-col">
+            <div class="sc-label">Firmness</div>
+            <div class="sc-max">max 10 pts</div>
+          </div>
+          <div class="scoring-op">+</div>
+          <div class="scoring-col">
+            <div class="sc-label">Texture</div>
+            <div class="sc-max">max 10 pts</div>
+          </div>
+          <div class="scoring-op">=</div>
+          <div class="scoring-total">
+            <div class="st-label">Total</div>
+            <div class="st-value">max 30 pts</div>
+          </div>
         </div>
       </div>
       <div class="scoring-note">All three dimensions contribute equally — a texture preference is worth exactly as much as a feel preference in the final recommendation.</div>
