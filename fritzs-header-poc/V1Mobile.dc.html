@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>V1 header mobile</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;family=Roboto+Slab:wght@500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 760px; position: relative; overflow: hidden; background: #F4F4F4; font-family: 'Open Sans', Arial, sans-serif; color: #172953">
+
+  <main style="padding: 84px 16px 20px; display: flex; flex-direction: column; gap: 12px">
+    <div style="font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6B7385">{{page}}</div>
+    <div style="height: 240px; border-radius: 14px; background: #E3E6EB"></div>
+    <div style="height: 120px; border-radius: 12px; background: #E9ECF0"></div>
+    <div style="height: 120px; border-radius: 12px; background: #E9ECF0"></div>
+    <div style="height: 120px; border-radius: 12px; background: #E9ECF0"></div>
+  </main>
+
+  <header style="position: absolute; z-index: 6; top: 0; left: 0; right: 0; height: {{barH}}px; box-sizing: border-box; background: #FFFFFF; border-bottom: 1px solid #E3E6EC; overflow: hidden; display: flex; flex-direction: column; transition: height {{barDur}}ms {{barEase}} {{barDelay}}ms">
+    <div style="height: 63px; flex: none; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 0 10px 0 14px">
+      <a href="#" data-url="{{logoHref}}" aria-label="{{logoAria}}" style="display: flex; align-items: center; flex: none; text-decoration: none">
+        <sc-if value="{{none}}" hint-placeholder-val="{{false}}"><img src="./assets/ddf162d5aedea260082189bd0acf24ef.png" alt="" style="width: 54px; height: 54px; display: block"></sc-if>
+        <sc-if value="{{isB}}" hint-placeholder-val="{{true}}"><img src="./assets/26f88d8ef86411c906a1d70351783e62.png" alt="" style="width: 54px; height: 54px; display: block"></sc-if>
+        <sc-if value="{{isC}}" hint-placeholder-val="{{false}}"><img src="./assets/846664f4d5c0f1cba44c6781dd1a9de3.png" alt="" style="width: 54px; height: 54px; display: block"></sc-if>
+      </a>
+      <button type="button" onClick="{{toggleSwitcher}}" aria-haspopup="true" aria-expanded="{{switcherOpen}}" aria-label="{{chipAria}}" style="height: 44px; min-width: 0; display: flex; align-items: center; gap: 6px; padding: 0 10px 0 9px; border-radius: 999px; border: 1.5px solid {{chipBorder}}; background: {{chipBg}}; color: #172953; font-family: 'Open Sans', Arial, sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; white-space: nowrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F26827" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+        {{chipLabel}}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </button>
+      <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
+        <button type="button" onClick="{{toggleBuy}}" aria-haspopup="dialog" aria-label="Buy tickets" style="margin-left: auto; height: 44px; display: flex; align-items: center; padding: 0 16px; border: 0; border-radius: 999px; background: #F26827; color: #172953; font-family: 'Open Sans', Arial, sans-serif; font-size: 15px; font-weight: 800; cursor: pointer">Tickets</button>
+      </sc-if>
+      <sc-if value="{{hasPark}}" hint-placeholder-val="{{true}}">
+        <a href="#" data-url="{{storeUrl}}" aria-label="Buy tickets for {{parkPlace}}" style="margin-left: auto; height: 44px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; background: #F26827; color: #172953; text-decoration: none; font-size: 15px; font-weight: 800">Tickets</a>
+      </sc-if>
+      <button type="button" onClick="{{toggleMenu}}" aria-expanded="{{menuMounted}}" aria-label="{{menuAria}}" style="width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 10px; background: {{menuBg}}; color: #172953; cursor: pointer; transition: background-color {{menuBgMs}}ms ease">
+        <span aria-hidden="true" style="position: relative; display: block; width: 22px; height: 22px">
+          <span style="position: absolute; left: 0; top: 10px; width: 22px; height: 2px; transform: translateY({{l1y}}px); transition: transform {{tMs}}ms {{iconEase}} {{tDelay}}ms">
+            <span style="display: block; width: 22px; height: 2px; border-radius: 2px; background: #172953; transform: rotate({{l1r}}deg); transition: transform {{rMs}}ms {{iconEase}} {{rDelay}}ms"></span>
+          </span>
+          <span style="position: absolute; left: 0; top: 10px; width: 22px; height: 2px; transform: translateY({{l2y}}px); transition: transform {{tMs}}ms {{iconEase}} {{tDelay}}ms">
+            <span style="display: block; width: 22px; height: 2px; border-radius: 2px; background: #172953; transform: rotate({{l2r}}deg); transition: transform {{rMs}}ms {{iconEase}} {{rDelay}}ms"></span>
+          </span>
+        </span>
+      </button>
+    </div>
+
+    <sc-if value="{{menuMounted}}" hint-placeholder-val="{{false}}">
+      <nav aria-label="Site menu" style="flex: 1; min-height: 0; display: flex; flex-direction: column; border-top: 1px solid #E3E6EC">
+        <div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column">
+
+          <sc-if value="{{hasPark}}" hint-placeholder-val="{{true}}">
+            <div style="padding: 10px 16px; display: flex; align-items: center; gap: 12px; background: #F4F4F4; opacity: {{c0.op}}; transform: translateY({{c0.y}}px); transition: opacity {{c0.dur}}ms {{ease}} {{c0.delay}}ms, transform {{c0.dur}}ms {{ease}} {{c0.delay}}ms">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F26827" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+              <span style="display: flex; flex-direction: column; flex: 1"><span style="font-family: 'Roboto Slab', serif; font-size: 18px; font-weight: 700">{{parkPlace}}</span><span style="display: flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: #384666"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Open today <strong style="color: #172953">10am–8pm</strong></span></span>
+              <button type="button" onClick="{{toggleSwitcher}}" aria-label="Current park: {{parkPlace}}. Change park" style="height: 44px; padding: 0 14px; border: 1.5px solid #C9CFDA; border-radius: 999px; background: #FFFFFF; color: #172953; font-family: 'Open Sans', Arial, sans-serif; font-size: 15px; font-weight: 700; cursor: pointer">Change</button>
+            </div>
+            <div style="display: flex; flex-direction: column; padding: 4px 0">
+              <sc-for list="{{links}}" as="l" hint-placeholder-count="5">
+                <a href="#" data-url="{{l.url}}" style="display: flex; align-items: center; justify-content: space-between; min-height: 48px; padding: 0 16px; text-decoration: none; color: #172953; font-size: 18px; font-weight: 700; opacity: {{l.op}}; transform: translateY({{l.y}}px); transition: opacity {{l.dur}}ms {{ease}} {{l.delay}}ms, transform {{l.dur}}ms {{ease}} {{l.delay}}ms">{{l.label}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#384666" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
+            <div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; background: #F4F4F4; opacity: {{c0.op}}; transform: translateY({{c0.y}}px); transition: opacity {{c0.dur}}ms {{ease}} {{c0.delay}}ms, transform {{c0.dur}}ms {{ease}} {{c0.delay}}ms">
+              <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Roboto Slab', serif; font-size: 18px; font-weight: 700">Choose your park</span><span style="font-size: 12.5px; color: #384666">Tickets, hours and parties are different at each park.</span></div>
+              <sc-for list="{{menuParks}}" as="o" hint-placeholder-count="2">
+                <a href="#" onClick="{{o.pick}}" data-event="park_selected" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 14px; box-sizing: border-box; border-radius: 14px; border: 1.5px solid #DCE0E8; background: #FFFFFF; text-decoration: none; color: #172953">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F26827" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+                  <span style="display: flex; flex-direction: column; gap: 2px; flex: 1"><span style="font-size: 15px; font-weight: 700">{{o.place}}</span><span style="font-size: 12.5px; color: #384666">{{o.long}}</span></span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#384666" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div style="margin: 0 16px; border-top: 1px solid #E3E6EC"></div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 4px 4px; opacity: {{c6.op}}; transform: translateY({{c6.y}}px); transition: opacity {{c6.dur}}ms {{ease}} {{c6.delay}}ms, transform {{c6.dur}}ms {{ease}} {{c6.delay}}ms">
+            <sc-if value="{{hasPark}}" hint-placeholder-val="{{true}}">
+              <a href="#" style="min-height: 44px; display: flex; align-items: center; padding: 0 12px; color: #172953; text-decoration: none; font-size: 15px; font-weight: 600">Waivers</a>
+              <a href="#" style="min-height: 44px; display: flex; align-items: center; padding: 0 12px; color: #172953; text-decoration: none; font-size: 15px; font-weight: 600">Gift Cards</a>
+            </sc-if>
+            <a href="#" style="min-height: 44px; display: flex; align-items: center; padding: 0 12px; color: #172953; text-decoration: none; font-size: 15px; font-weight: 600">FAQs</a>
+            <a href="#" style="min-height: 44px; display: flex; align-items: center; padding: 0 12px; color: #172953; text-decoration: none; font-size: 15px; font-weight: 600">Contact</a>
+          </div>
+          <div style="margin: 0 16px; border-top: 1px solid #E3E6EC"></div>
+          <div style="display: flex; flex-direction: column; opacity: {{c7.op}}; transform: translateY({{c7.y}}px); transition: opacity {{c7.dur}}ms {{ease}} {{c7.delay}}ms, transform {{c7.dur}}ms {{ease}} {{c7.delay}}ms">
+            <div style="padding: 10px 16px 2px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #5B6478">About Fritz's</div>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0 4px 6px">
+              <sc-for list="{{about}}" as="a" hint-placeholder-count="6">
+                <a href="#" data-url="{{a.url}}" style="min-height: 44px; display: flex; align-items: center; padding: 0 12px; color: #384666; text-decoration: none; font-size: 15px; font-weight: 400">{{a.label}}</a>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="flex: none; padding: 10px 16px 16px; border-top: 1px solid #E3E6EC; background: #FFFFFF; opacity: {{c8.op}}; transform: translateY({{c8.y}}px); transition: opacity {{c8.dur}}ms {{ease}} {{c8.delay}}ms, transform {{c8.dur}}ms {{ease}} {{c8.delay}}ms">
+          <sc-if value="{{hasPark}}" hint-placeholder-val="{{true}}">
+            <a href="#" data-url="{{storeUrl}}" style="height: 52px; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; background: #F26827; color: #172953; text-decoration: none; font-size: 15px; font-weight: 800">{{ctaLong}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          </sc-if>
+          <sc-if value="{{none}}" hint-placeholder-val="{{false}}">
+            <button type="button" onClick="{{buyFromMenu}}" aria-haspopup="dialog" style="width: 100%; height: 52px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; background: #F26827; color: #172953; font-family: 'Open Sans', Arial, sans-serif; font-size: 15px; font-weight: 800; cursor: pointer">Buy Tickets<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+          </sc-if>
+        </div>
+      </nav>
+    </sc-if>
+  </header>
+
+  <sc-if value="{{switcherOpen}}" hint-placeholder-val="{{false}}">
+    <div role="dialog" aria-label="Choose your park" style="position: absolute; z-index: 10; top: 72px; left: 12px; right: 12px; background: #FFFFFF; border-radius: 16px; box-shadow: 0 18px 44px rgba(23,41,83,0.20); padding: 8px; opacity: {{pOp}}; transform: translateY({{pY}}px); transition: opacity {{pDur}}ms {{pEase}}, transform {{pDur}}ms {{pEase}}">
+      <div style="padding: 10px 12px 6px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B6478">Choose your park</div>
+      <sc-for list="{{options}}" as="o" hint-placeholder-count="2">
+        <a href="#" onClick="{{o.pick}}" data-event="park_selected" aria-current="{{o.current}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 12px; border-radius: 12px; background: {{o.bg}}; text-decoration: none; color: #172953">
+          <span style="display: flex; flex-direction: column; gap: 2px; flex: 1"><span style="font-size: 15px; font-weight: 700">{{o.name}}</span><span style="font-size: 12.5px; color: #384666">{{o.long}}</span></span>
+          <sc-if value="{{o.current}}" hint-placeholder-val="{{false}}"><span style="display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; border: 1px solid #DCE0E8; background: #FFFFFF; border-radius: 999px; padding: 4px 10px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>Current</span></sc-if>
+          <sc-if value="{{o.other}}" hint-placeholder-val="{{true}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#384666" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></sc-if>
+        </a>
+      </sc-for>
+      <div style="padding: 8px 12px; font-size: 12.5px; color: #5B6478">Choosing a park takes you to that park’s home page.</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{buyOpen}}" hint-placeholder-val="{{false}}">
+    <div style="position: absolute; z-index: 8; inset: 64px 0 0 0; background: rgba(23,41,83,0.40); opacity: {{pOp}}; transition: opacity {{pDur}}ms {{pEase}}"></div>
+    <div role="dialog" aria-label="Which park are you visiting?" style="position: absolute; z-index: 10; left: 0; right: 0; bottom: 0; background: #FFFFFF; border-radius: 22px 22px 0 0; padding: 12px 20px 28px; display: flex; flex-direction: column; gap: 12px; opacity: {{pOp}}; transform: translateY({{sheetY}}px); transition: opacity {{pDur}}ms {{pEase}}, transform {{pDur}}ms {{pEase}}">
+      <div style="align-self: center; width: 40px; height: 4px; border-radius: 4px; background: #C9CFDA"></div>
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <div style="font-family: 'Roboto Slab', serif; font-size: 18px; font-weight: 700">Which park are you visiting?</div>
+        <button type="button" onClick="{{toggleBuy}}" aria-label="Close" style="width: 44px; height: 44px; border: 0; background: transparent; color: #172953; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+      <div style="font-size: 12.5px; color: #384666; margin-top: -8px">We'll take you straight to that park's ticket store.</div>
+      <sc-for list="{{buyOptions}}" as="o" hint-placeholder-count="2">
+        <a href="#" onClick="{{o.pick}}" data-event="park_selected + ticket_clickout" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 16px; box-sizing: border-box; border: 1.5px solid #DCE0E8; border-radius: 14px; text-decoration: none; color: #172953">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F26827" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+          <span style="display: flex; flex-direction: column; gap: 2px; flex: 1"><span style="font-size: 15px; font-weight: 700">{{o.place}}</span><span style="font-size: 12.5px; color: #384666">{{o.long}}</span></span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+      </sc-for>
+      <div style="font-size: 12.5px; color: #5B6478">Your park is remembered — you won't be asked again.</div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;park&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;none&quot;,&quot;branson&quot;,&quot;colony&quot;],&quot;default&quot;:&quot;branson&quot;},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;switcher&quot;,&quot;buy&quot;,&quot;menu&quot;],&quot;default&quot;:&quot;default&quot;},&quot;page&quot;:{&quot;editor&quot;:null,&quot;default&quot;:&quot;Branson park home · /branson/&quot;},&quot;barMs&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:300,&quot;min&quot;:80,&quot;max&quot;:900,&quot;step&quot;:10,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Menu open&quot;},&quot;itemStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0,&quot;min&quot;:0,&quot;max&quot;:400,&quot;step&quot;:10,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Menu open&quot;},&quot;stagger&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:35,&quot;min&quot;:0,&quot;max&quot;:150,&quot;step&quot;:5,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Menu open&quot;},&quot;itemMs&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:220,&quot;min&quot;:60,&quot;max&quot;:700,&quot;step&quot;:10,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Menu open&quot;},&quot;dist&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:10,&quot;min&quot;:0,&quot;max&quot;:32,&quot;step&quot;:1,&quot;unit&quot;:&quot;px&quot;,&quot;section&quot;:&quot;Menu open&quot;},&quot;closeFade&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:220,&quot;min&quot;:40,&quot;max&quot;:400,&quot;step&quot;:10,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Menu close&quot;},&quot;collapseDelay&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0,&quot;min&quot;:0,&quot;max&quot;:300,&quot;step&quot;:10,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Menu close&quot;},&quot;collapseMs&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:220,&quot;min&quot;:60,&quot;max&quot;:700,&quot;step&quot;:10,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Menu close&quot;},&quot;panelIn&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:180,&quot;min&quot;:60,&quot;max&quot;:600,&quot;step&quot;:10,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Panels&quot;},&quot;panelOut&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:130,&quot;min&quot;:40,&quot;max&quot;:500,&quot;step&quot;:10,&quot;unit&quot;:&quot;ms&quot;,&quot;section&quot;:&quot;Panels&quot;},&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:760}}">
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const P = this.props;
+    const park = s.park ?? P.park ?? 'branson';
+    const view = s.view ?? (P.view === 'menu' ? 'default' : (P.view ?? 'default'));
+    const menu = s.menu ?? (P.view === 'menu' ? 'open' : 'closed');
+    const phase = s.phase ?? 'shown';
+    const n = (k, d) => Number(P[k] ?? d);
+    const barMs = n('barMs', 300), itemStart = n('itemStart', 0), stagger = n('stagger', 35), itemMs = n('itemMs', 220), dist = n('dist', 10);
+    const closeFade = n('closeFade', 220), collapseDelay = n('collapseDelay', 0), collapseMs = n('collapseMs', 220);
+    const panelIn = n('panelIn', 180), panelOut = n('panelOut', 130);
+    const none = park === 'none';
+    const PARKS = {
+      branson: { name: 'Branson', place: 'Branson, MO', long: 'Branson, Missouri', home: '/branson/' },
+      colony: { name: 'The Colony', place: 'The Colony, TX', long: 'The Colony, Texas · Dallas area', home: '/the-colony/' }
+    };
+    const LINKS = {
+      branson: [['Tickets & Pricing', '/branson/indoor-playground-in-branson/'], ['Attractions', '/attraction-location/branson-mo/'], ['Birthdays', '/branson/birthday-parties-in-branson/'], ['Groups & Field Trips', '/branson/plan-my-group-visit/'], ['Hours & Directions', '/branson/family-activities-in-branson/']],
+      colony: [['Tickets & Pricing', '/the-colony/pricing/'], ['Attractions', '[placeholder: Colony attractions]'], ['Birthdays', '/the-colony/birthday-parties/'], ['Groups & Field Trips', '/the-colony/groups/'], ['Hours & Directions', '/the-colony/hours-location/']]
+    };
+    const p = PARKS[park] || PARKS.branson;
+
+    const anim = (i) => {
+      if (menu === 'opening') return { op: 0, y: dist, dur: 0, delay: 0 };
+      if (menu === 'closing') return { op: 0, y: 0, dur: closeFade, delay: 0 };
+      return { op: 1, y: 0, dur: itemMs, delay: itemStart + i * stagger };
+    };
+    const order = none ? { c0: 0, c6: 1, c7: 2, c8: 3 } : { c0: 0, c6: 6, c7: 7, c8: 8 };
+    const links = none ? [] : LINKS[park].map(([label, url], i) => Object.assign({ label, url }, anim(i + 1)));
+
+    const openMenu = () => {
+      clearTimeout(this._m);
+      this.setState({ park, view: 'default', menu: 'opening' });
+      this._m = setTimeout(() => this.setState({ menu: 'open' }), 30);
+    };
+    const closeMenu = (patch) => {
+      clearTimeout(this._m);
+      this.setState(Object.assign({ menu: 'closing' }, patch || {}));
+      this._m = setTimeout(() => this.setState({ menu: 'closed' }), collapseDelay + collapseMs);
+    };
+    const toggleMenu = () => ((menu === 'closed') ? openMenu() : closeMenu());
+
+    const closePanel = (patch) => {
+      this.setState({ phase: 'exit' });
+      clearTimeout(this._t);
+      this._t = setTimeout(() => this.setState(Object.assign({ view: 'default', phase: 'shown' }, patch || {})), panelOut);
+    };
+    const openPanel = (v) => {
+      clearTimeout(this._t);
+      this.setState({ park, view: v, phase: 'enter' });
+      this._t = setTimeout(() => this.setState({ phase: 'shown' }), 30);
+    };
+    const togglePanel = (v) => () => (view === v ? closePanel() : openPanel(v));
+
+    const options = ['branson', 'colony'].map((k) => ({ name: PARKS[k].name, long: PARKS[k].long, current: k === park, other: k !== park, bg: k === park ? '#F4F4F4' : '#FFFFFF', pick: () => { if (menu !== 'closed') closeMenu(); closePanel({ park: k }); } }));
+    const buyOptions = ['branson', 'colony'].map((k) => ({ place: PARKS[k].place, long: PARKS[k].long, pick: () => closePanel({ park: k }) }));
+    const menuParks = ['branson', 'colony'].map((k) => ({ place: PARKS[k].place, long: PARKS[k].long, pick: () => closeMenu({ park: k }) }));
+    const about = [['Our Story', '/home/a-unique-family-activities-concept/'], ['Careers', '/home/leadership-training-programs/'], ['News & Events', '/news-events/'], ['Media Kit', '/home/fritzs-media-kit/'], ['Code of Conduct', '/home/code-of-conduct/'], ['Outfitters', '/outfitters/']].map(([label, url]) => ({ label, url }));
+
+    const isOpen = menu === 'open';
+    const mounted = menu !== 'closed';
+    const shown = phase === 'shown';
+    return {
+      none, hasPark: !none, about, links, options, buyOptions, menuParks,
+      isB: park === 'branson', isC: park === 'colony',
+      logoHref: none ? '/' : p.home,
+      logoAria: none ? "Fritz's Adventure home" : "Fritz's Adventure " + p.name + ' home',
+      chipLabel: none ? 'Choose park' : p.name,
+      chipAria: none ? 'No park selected. Choose a park' : 'Current park: ' + p.place + '. Change park',
+      chipBg: none ? '#FDEBE1' : '#FFFFFF',
+      chipBorder: none ? '#F26827' : '#C9CFDA',
+      parkPlace: p.place,
+      ease: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+      barH: isOpen ? 760 : 64,
+      barDur: menu === 'closing' ? collapseMs : barMs,
+      barDelay: menu === 'closing' ? collapseDelay : 0,
+      barEase: menu === 'closing' ? 'cubic-bezier(0.4, 0, 1, 1)' : 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+      c0: anim(order.c0), c6: anim(order.c6), c7: anim(order.c7), c8: anim(order.c8),
+      menuMounted: mounted, menuClosed: !mounted,
+      menuBg: isOpen ? '#EEF0F4' : 'transparent',
+      menuBgMs: menu === 'closing' ? 160 : 200,
+      l1y: isOpen ? 0 : -4, l2y: isOpen ? 0 : 4,
+      l1r: isOpen ? 45 : 0, l2r: isOpen ? -45 : 0,
+      tMs: 140, rMs: isOpen ? 200 : 160,
+      tDelay: isOpen ? 0 : 100, rDelay: isOpen ? 100 : 0,
+      iconEase: isOpen ? 'cubic-bezier(0.2, 0.8, 0.2, 1)' : 'cubic-bezier(0.4, 0, 0.2, 1)',
+      menuAria: mounted ? 'Close menu' : 'Open menu',
+      toggleMenu,
+      switcherOpen: view === 'switcher', buyOpen: view === 'buy',
+      toggleSwitcher: togglePanel('switcher'), toggleBuy: togglePanel('buy'),
+      buyFromMenu: () => { closeMenu(); openPanel('buy'); },
+      pOp: shown ? 1 : 0,
+      pY: shown ? 0 : 8,
+      sheetY: shown ? 0 : 24,
+      pDur: phase === 'exit' ? panelOut : panelIn,
+      pEase: phase === 'exit' ? 'cubic-bezier(0.4, 0, 1, 1)' : 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+      storeUrl: '[' + p.name + ' ticket store — direct]',
+      ctaLong: 'Buy ' + p.name + ' Tickets',
+      page: P.page ?? (none ? 'FAQs · /home/frequently-asked-questions/' : p.name + ' park home · ' + p.home)
+    };
+  }
+}
+</script>
+</body>
+</html>
